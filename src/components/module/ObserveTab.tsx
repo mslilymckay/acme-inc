@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Sparkles, ArrowRight, MessageSquareQuote, Search, CheckCircle2 } from 'lucide-react';
 import { ObserveTabData, Hotspot } from '../../types/game';
 import { CharacterAvatar } from '../common/CharacterAvatar';
-import { SamMood } from '../common/SamIllustration';
 import { useGameStore } from '../../store/useGameStore';
 
 interface ObserveTabProps {
@@ -13,11 +12,6 @@ interface ObserveTabProps {
 export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
   const { discoveredHotspots, discoverHotspot, setCurrentTab } = useGameStore();
   const caseDiscovered = discoveredHotspots[caseId] || [];
-  const allCluesFound = data.flawed_output.hotspots.length > 0 &&
-    data.flawed_output.hotspots.every(h => caseDiscovered.includes(h.id));
-
-  // Local mood preview state (defaults to stressed, flips to thinking when clues found, or user clicks preview pills)
-  const [currentMood, setCurrentMood] = useState<SamMood>(allCluesFound ? 'thinking' : 'stressed');
 
   const handleHotspotClick = (hotspot: Hotspot) => {
     discoverHotspot(caseId, hotspot);
@@ -26,16 +20,14 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
   return (
     <div className="flex flex-col h-full justify-between pb-2 overflow-hidden">
       <div className="space-y-3">
-        {/* Colleague Chat Dialogue with Illustrated Sam */}
+        {/* Colleague Chat Dialogue with Sleepy Sam */}
         <div className="bg-white border-2 border-black rounded-2xl p-3 shadow-comic-sm">
           <CharacterAvatar
             name={data.colleague_name}
             role={data.colleague_role}
             avatar={data.colleague_avatar}
-            mood={currentMood}
+            mood="stressed"
             size="md"
-            showMoodToggle={true}
-            onMoodChange={setCurrentMood}
           />
 
           <div className="mt-2.5 relative bg-amber-50 border border-black/20 rounded-xl p-2.5 text-xs text-slate-800 leading-snug">

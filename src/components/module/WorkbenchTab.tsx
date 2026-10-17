@@ -126,7 +126,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
           </button>
         </div>
 
-        {/* AUTHENTIC BENTO BOX CONTAINER (Gray outer border, LIGHT inner container and slots) */}
+        {/* AUTHENTIC BENTO BOX CONTAINER */}
         <div className="p-2.5 bg-stone-900 border-3 border-black rounded-3xl shadow-comic relative ring-2 ring-stone-700/60">
           {/* Bento Brand Stamp */}
           <div className="flex items-center justify-between pb-1.5 px-1 text-[9px] font-black uppercase tracking-wider text-amber-400 font-mono">
@@ -258,7 +258,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
         </button>
       </div>
 
-      {/* FULL SUCCESS OVERLAY MODAL */}
+      {/* FULL SUCCESS OVERLAY MODAL (Focus on Pleased Sam, no emoji badge) */}
       <AnimatePresence>
         {isSolved && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
@@ -268,35 +268,29 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               className="w-full max-w-sm bg-emerald-50 border-3 border-black rounded-3xl p-4 shadow-comic space-y-3"
             >
-              {/* Header with Character Satisfaction Emoji */}
-              <div className="flex items-center justify-between pb-2 border-b border-black/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-400 border-2 border-black flex items-center justify-center shadow-comic-sm">
-                    <CheckCircle2 className="w-5 h-5 text-slate-900" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-sm text-slate-900 leading-tight">
-                      {data.success_resolution.heading}
-                    </h4>
-                    <span className="text-[10px] font-bold text-emerald-800">
-                      +100 Clarity XP Earned
-                    </span>
-                  </div>
+              {/* Header without emoji in corner */}
+              <div className="flex items-center gap-2.5 pb-2 border-b border-black/10">
+                <div className="w-8 h-8 rounded-xl bg-emerald-400 border-2 border-black flex items-center justify-center shadow-comic-sm">
+                  <CheckCircle2 className="w-5 h-5 text-slate-900" />
                 </div>
-
-                <div className="w-9 h-9 rounded-2xl bg-white border-2 border-black flex items-center justify-center text-xl shadow-comic-sm">
-                  {data.success_resolution.character_reaction_emoji}
+                <div>
+                  <h4 className="font-black text-sm text-slate-900 leading-tight">
+                    {data.success_resolution.heading}
+                  </h4>
+                  <span className="text-[10px] font-bold text-emerald-800">
+                    +100 Clarity XP Earned
+                  </span>
                 </div>
               </div>
 
-              {/* Sam's Satisfied Character Reaction Card (Just the emoji avatar) */}
+              {/* Sam's Pleased Character Card (Earnestly satisfied with wide eyes & full smile) */}
               <div className="bg-white border-2 border-black rounded-xl p-2.5 shadow-comic-sm">
                 <CharacterAvatar
                   name="Sam"
                   role="L&D Lead"
                   mood="satisfied"
                   quote={data.success_resolution.character_reaction_quote}
-                  size="sm"
+                  size="md"
                 />
               </div>
 
