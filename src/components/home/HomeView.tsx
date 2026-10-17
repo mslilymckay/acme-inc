@@ -1,133 +1,152 @@
 import React, { useState } from 'react';
-import { Sparkles, Zap, Compass, Filter, BookOpen } from 'lucide-react';
+import { Sparkles, ArrowRight, BookOpen } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 import { TrophyCarousel } from './TrophyCarousel';
 import { CaseCard } from './CaseCard';
+import { FieldGuideDrawer } from '../module/FieldGuideDrawer';
 
 export const HomeView: React.FC = () => {
-  const { cases, userXp, setCurrentCase } = useGameStore();
+  const { cases, userXp, setCurrentCase, currentCaseId } = useGameStore();
   const [selectedLevel, setSelectedLevel] = useState<number | 'all'>('all');
 
   const casesArray = Object.values(cases);
-  const filteredCases = selectedLevel === 'all'
-    ? casesArray
-    : casesArray.filter(c => c.level === selectedLevel);
-
   const activeCase = casesArray.find(c => c.status === 'active');
+  const selectedCaseData = cases[currentCaseId];
+
+  const levels = [
+    { level: 1, name: "Models", badge: "🧠" },
+    { level: 2, name: "Prompting", badge: "🍱" },
+    { level: 3, name: "Collaboration", badge: "🤝" },
+    { level: 4, name: "Skills", badge: "🛠️" },
+    { level: 5, name: "Tasks & Agents", badge: "⚡" },
+  ];
+
+  const visibleLevels = selectedLevel === 'all'
+    ? levels
+    : levels.filter(l => l.level === selectedLevel);
 
   return (
-    <div className="flex flex-col h-full bg-acme-cream overflow-y-auto pb-8">
+    <div className="flex flex-col h-full bg-acme-cream relative overflow-hidden">
       {/* Acme Flux Header */}
-      <header className="sticky top-0 z-30 bg-acme-yellow border-b-2 border-black p-3.5 flex items-center justify-between shadow-comic-sm">
+      <header className="shrink-0 z-20 bg-acme-yellow border-b-2 border-black p-3 flex items-center justify-between shadow-comic-sm">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-white border-2 border-black flex items-center justify-center text-lg shadow-comic-sm font-black">
+          <div className="w-8 h-8 rounded-xl bg-white border-2 border-black flex items-center justify-center text-base shadow-comic-sm font-black">
             ⚡
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 block">
+            <span className="text-[9px] font-black uppercase tracking-wider text-slate-700 block">
               Acme Flux Workspace
             </span>
-            <h1 className="text-sm font-black text-slate-900 leading-tight">
+            <h1 className="text-xs font-black text-slate-900 leading-tight">
               Signal & Noise: AI Coach
             </h1>
           </div>
         </div>
 
-        {/* Global XP counter */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border-2 border-black rounded-full shadow-comic-sm">
-          <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+        {/* Global XP Pill */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-black rounded-full shadow-comic-sm">
+          <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
           <span className="text-xs font-black text-slate-900 font-mono">
             {userXp} XP
           </span>
         </div>
       </header>
 
-      {/* Main Home Content */}
-      <div className="p-3.5 space-y-4">
-        {/* Top Trophy Badges Shelf */}
+      {/* Scrollable Matrix Content */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
+        {/* Top Trophy Shelf */}
         <TrophyCarousel />
 
-        {/* Featured Active Case Spotlight Card */}
-        {activeCase && (
-          <div className="bg-white border-3 border-black rounded-3xl p-4 shadow-comic relative overflow-hidden">
-            <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-black/10">
-              <span className="text-[10px] font-black uppercase tracking-wider text-rose-600 flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping inline-block" />
-                Next Urgent Coaching Request
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 rounded-full border border-black/30">
-                Case {activeCase.id}
-              </span>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-acme-yellow border-2 border-black flex items-center justify-center text-2xl shadow-comic-sm shrink-0">
-                {activeCase.home_card.icon}
-              </div>
-
-              <div>
-                <h3 className="font-black text-sm text-slate-900">
-                  {activeCase.title}
-                </h3>
-                <p className="text-xs text-slate-600 mt-1 line-clamp-2">
-                  {activeCase.home_card.hook}
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setCurrentCase(activeCase.id)}
-              className="mt-3 w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
-            >
-              <span>Solve Case {activeCase.id} (The Mind-Reader Fallacy) ➔</span>
-            </button>
-          </div>
-        )}
-
-        {/* 3x5 Matrix Filter Row */}
+        {/* Case History Header & Filter Pills */}
         <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1.5">
-            <Compass className="w-4 h-4 text-slate-700" />
-            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
-              The 15-Case Matrix
-            </h3>
-          </div>
+          <h2 className="text-xs font-black uppercase tracking-wider text-slate-900">
+            Case History
+          </h2>
 
-          {/* Level Filter Tabs */}
+          {/* Level Filter Pills */}
           <div className="flex items-center gap-1">
             <button
               onClick={() => setSelectedLevel('all')}
-              className={`px-2 py-0.5 text-[10px] font-black rounded-lg border ${
+              className={`px-2 py-0.5 text-[10px] font-black rounded-lg border transition-all ${
                 selectedLevel === 'all'
                   ? 'bg-black text-white border-black'
-                  : 'bg-white text-slate-600 border-slate-300'
+                  : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
               }`}
             >
               All
             </button>
-            {[1, 2, 3, 4, 5].map((lvl) => (
+            {levels.map((l) => (
               <button
-                key={lvl}
-                onClick={() => setSelectedLevel(lvl)}
-                className={`px-2 py-0.5 text-[10px] font-black rounded-lg border ${
-                  selectedLevel === lvl
+                key={l.level}
+                onClick={() => setSelectedLevel(l.level)}
+                className={`px-2 py-0.5 text-[10px] font-black rounded-lg border transition-all ${
+                  selectedLevel === l.level
                     ? 'bg-acme-yellow text-slate-900 border-black shadow-comic-sm'
-                    : 'bg-white text-slate-600 border-slate-300'
+                    : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                L{lvl}
+                L{l.level}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Case Cards Grid */}
-        <div className="grid grid-cols-1 gap-3">
-          {filteredCases.map((caseItem) => (
-            <CaseCard key={caseItem.id} caseData={caseItem} />
-          ))}
+        {/* 3x5 Case Matrix (Grouped by Levels with Divider Lines) */}
+        <div className="space-y-3">
+          {visibleLevels.map((lvl) => {
+            const levelCases = casesArray.filter(c => c.level === lvl.level);
+
+            return (
+              <div key={lvl.level} className="space-y-1.5">
+                {/* Horizontal Level Divider */}
+                <div className="flex items-center gap-2">
+                  <div className="h-[2px] bg-black/15 flex-1" />
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-600 px-2 py-0.5 bg-white border border-black/20 rounded-md">
+                    {lvl.badge} Level {lvl.level}: {lvl.name}
+                  </span>
+                  <div className="h-[2px] bg-black/15 flex-1" />
+                </div>
+
+                {/* 3 Columns Row */}
+                <div className="grid grid-cols-3 gap-2">
+                  {levelCases.map((caseItem) => (
+                    <CaseCard key={caseItem.id} caseData={caseItem} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* Wide Floating Action Button (FAB) Overlay for Next Active Case */}
+      {activeCase && (
+        <div className="absolute bottom-3 left-3 right-3 z-30">
+          <button
+            onClick={() => setCurrentCase(activeCase.id)}
+            className="w-full py-3.5 px-4 bg-acme-yellow hover:bg-yellow-300 border-3 border-black rounded-2xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-between active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer ring-2 ring-black/10"
+          >
+            <div className="flex items-center gap-2 truncate">
+              <span className="text-lg leading-none">{activeCase.home_card.icon}</span>
+              <span className="truncate">
+                Solve {activeCase.id}: {activeCase.title}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 shrink-0 font-bold bg-black text-acme-yellow px-2.5 py-1 rounded-xl text-[11px]">
+              <span>Start</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </button>
+        </div>
+      )}
+
+      {/* Field Guide Drawer when triggered from Closed case cards */}
+      {selectedCaseData && (
+        <FieldGuideDrawer
+          data={selectedCaseData.field_guide_data}
+          caseId={selectedCaseData.id}
+        />
+      )}
     </div>
   );
 };

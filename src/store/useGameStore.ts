@@ -4,6 +4,7 @@ import { INITIAL_CASES } from '../data/cases';
 
 interface GameState {
   userXp: number;
+  xpToast: string | null;
   cases: Record<string, CaseData>;
   activeView: ActiveView;
   currentCaseId: string;
@@ -21,23 +22,24 @@ interface GameState {
   setCurrentTab: (tab: 'observe' | 'inspect' | 'workbench') => void;
   discoverHotspot: (caseId: string, hotspot: Hotspot) => void;
   closeHotspotModal: () => void;
+  clearXpToast: () => void;
   assignChip: (slotId: string, chipId: string) => void;
   removeChip: (slotId: string) => void;
+  clearAllSlots: () => void;
   checkSolution: () => boolean;
-  openFieldGuide: () => void;
+  openFieldGuide: (caseId?: string) => void;
   closeFieldGuide: () => void;
   replayCase: (caseId: string) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
   userXp: 150, // Starting XP from cleared Level 1 mysteries
+  xpToast: null,
   cases: INITIAL_CASES,
   activeView: 'HOME',
   currentCaseId: '2.1',
   currentTab: 'observe',
-  discoveredHotspots: {
-    '2.1': []
-  },
+  discoveredHotspots: {},
   activeHotspotClue: null,
   slotAssignments: {
     slot_role: null,
@@ -73,27 +75,38 @@ export const useGameStore = create<GameState>((set, get) => ({
   setCurrentTab: (tab) => set({ currentTab: tab }),
 
   discoverHotspot: (caseId, hotspot) => {
-    const currentDiscovered = get().discoveredHotspots[caseId] || [];
+    const state = get();
+    const currentDiscovered = state.discoveredHotspots[caseId] || [];
     const isNew = !currentDiscovered.includes(hotspot.id);
 
-    set({
-      activeHotspotClue: hotspot,
-      ...(isNew ? {
-        userXp: get().userXp + hotspot.xp_value,
+    if (isNew) {
+      const newDiscovered = [...currentDiscovered, hotspot.id];
+      const newXp = state.userXp + (hotspot.xp_value || 25);
+      
+      set({
+        activeHotspotClue: hotspot,
+        userXp: newXp,
+        xpToast: `+${hotspot.xp_value || 25} XP`,
         discoveredHotspots: {
-          ...get().discoveredHotspots,
-          [caseId]: [...currentDiscovered, hotspot.id]
+          ...state.discoveredHotspots,
+          [caseId]: newDiscovered
         }
-      } : {})
-    });
+      });
+    } else {
+      set({
+        activeHotspotClue: hotspot
+      });
+    }
   },
 
   closeHotspotModal: () => set({ activeHotspotClue: null }),
 
+  clearXpToast: () => set({ xpToast: null }),
+
   assignChip: (slotId, chipId) => {
     const currentAssignments = { ...get().slotAssignments };
     
-    // If this chip was already in another slot, unassign it from that slot
+    // If chip was in another slot, unassign it
     Object.keys(currentAssignments).forEach((sId) => {
       if (currentAssignments[sId] === chipId) {
         currentAssignments[sId] = null;
@@ -103,7 +116,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     currentAssignments[slotId] = chipId;
     set({ slotAssignments: currentAssignments });
 
-    // Auto-check solution if all slots are filled
+    // Check solution if all slots filled
     const allFilled = Object.values(currentAssignments).every(val => val !== null);
     if (allFilled) {
       get().checkSolution();
@@ -117,6 +130,18 @@ export const useGameStore = create<GameState>((set, get) => ({
         [slotId]: null
       }
     }));
+  },
+
+  clearAllSlots: () => {
+    set({
+      slotAssignments: {
+        slot_role: null,
+        slot_audience: null,
+        slot_context: null,
+        slot_format: null,
+      },
+      isSolved: false
+    });
   },
 
   checkSolution: () => {
@@ -138,7 +163,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         status: 'completed'
       };
 
-      // Also unlock next case if applicable (e.g. 2.2)
+      // Unlock next case (2.2)
       if (currentCaseId === '2.1' && updatedCases['2.2']) {
         updatedCases['2.2'] = {
           ...updatedCases['2.2'],
@@ -155,7 +180,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         isSolved: true,
         cases: updatedCases,
         unlockedBadges: newBadges,
-        userXp: wasAlreadyCompleted ? userXp : userXp + 100 // +100 Clarity XP for solve
+        userXp: wasAlreadyCompleted ? userXp : userXp + 100,
+        xpToast: wasAlreadyCompleted ? null : "+100 XP"
       });
 
       return true;
@@ -164,13 +190,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     return false;
   },
 
-  openFieldGuide: () => set({ showFieldGuideModal: true }),
+  openFieldGuide: (caseId) => {
+    if (caseId) {
+      set({ currentCaseId: caseId, showFieldGuideModal: true });
+    } else {
+      set({ showFieldGuideModal: true });
+    }
+  },
+
   closeFieldGuide: () => set({ showFieldGuideModal: false }),
 
   replayCase: (caseId) => {
     set({
       currentCaseId: caseId,
-      currentTab: 'observe',
+      currentTab: 'workbench',
       activeView: 'MODULE',
       isSolved: false,
       showFieldGuideModal: false,
