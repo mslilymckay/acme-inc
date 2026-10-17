@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, RotateCcw, BookOpen, Sparkles, AlertCircle, X, Move } from 'lucide-react';
-import { WorkbenchTabData, NounChip } from '../../types/game';
+import { CheckCircle2, RotateCcw, BookOpen, Sparkles, AlertCircle, X, Hand } from 'lucide-react';
+import { WorkbenchTabData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 import { CharacterAvatar } from '../common/CharacterAvatar';
 
@@ -22,14 +22,11 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
     replayCase
   } = useGameStore();
 
-  const [draggedChipId, setDraggedChipId] = useState<string | null>(null);
-  const [hoveredSlotId, setHoveredSlotId] = useState<string | null>(null);
-  const [selectedChipId, setSelectedChipId] = useState<string | null>(null);
+  const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Scramble available chips so they are never in slot order
   const scrambledChips = useMemo(() => {
-    // Deterministic shuffle with distractors interspersed
     const chips = [...data.available_chips];
     const order = ["chip_length", "chip_bullets", "chip_exec", "chip_ld", "chip_jargon", "chip_reg", "chip_managers"];
     return chips.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
@@ -38,60 +35,46 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   const assignedChipIds = Object.values(slotAssignments).filter(Boolean) as string[];
   const unassignedChips = scrambledChips.filter(chip => !assignedChipIds.includes(chip.id));
 
-  // Drag and Drop handlers
-  const handleDragStart = (e: React.DragEvent, chipId: string) => {
-    e.dataTransfer.setData('text/plain', chipId);
-    setDraggedChipId(chipId);
-  };
+  // Find active slot object
+  const activeSlot = data.bento_slots.find(s => s.id === activeSlotId);
 
-  const handleDragOver = (e: React.DragEvent, slotId: string) => {
-    e.preventDefault();
-    if (hoveredSlotId !== slotId) {
-      setHoveredSlotId(slotId);
-    }
-  };
-
-  const handleDragLeave = () => {
-    setHoveredSlotId(null);
-  };
-
-  const handleDrop = (e: React.DragEvent, slotId: string) => {
-    e.preventDefault();
-    const chipId = e.dataTransfer.getData('text/plain') || draggedChipId;
-    if (chipId) {
-      assignChip(slotId, chipId);
-      setErrorMessage(null);
-    }
-    setDraggedChipId(null);
-    setHoveredSlotId(null);
-  };
-
-  // Tap-to-place fallback for mobile touch
-  const handleChipTap = (chipId: string) => {
+  // Step 1: Tap slot -> Highlights slot and shifts focus to ingredients card
+  const handleSlotClick = (slotId: string) => {
     setErrorMessage(null);
-    if (selectedChipId === chipId) {
-      setSelectedChipId(null);
+    if (slotAssignments[slotId]) {
+      // If already assigned, remove it
+      removeChip(slotId);
+      setActiveSlotId(slotId);
       return;
     }
 
-    // If an empty slot exists, drop into the first empty slot
-    const emptySlot = data.bento_slots.find(slot => !slotAssignments[slot.id]);
-    if (emptySlot) {
-      assignChip(emptySlot.id, chipId);
+    if (activeSlotId === slotId) {
+      setActiveSlotId(null);
     } else {
-      setSelectedChipId(chipId);
+      setActiveSlotId(slotId);
     }
   };
 
-  const handleSlotTap = (slotId: string) => {
-    if (slotAssignments[slotId]) {
-      removeChip(slotId);
+  // Step 2: Tap ingredient -> Adds ingredient to the active slot
+  const handleIngredientClick = (chipId: string) => {
+    setErrorMessage(null);
+
+    // Target the actively selected slot if one is highlighted
+    if (activeSlotId) {
+      assignChip(activeSlotId, chipId);
+      
+      // Auto-advance to next empty slot if available
+      const nextEmptySlot = data.bento_slots.find(
+        s => s.id !== activeSlotId && !slotAssignments[s.id]
+      );
+      setActiveSlotId(nextEmptySlot ? nextEmptySlot.id : null);
       return;
     }
 
-    if (selectedChipId) {
-      assignChip(slotId, selectedChipId);
-      setSelectedChipId(null);
+    // Fallback: place into the first empty slot
+    const firstEmpty = data.bento_slots.find(s => !slotAssignments[s.id]);
+    if (firstEmpty) {
+      assignChip(firstEmpty.id, chipId);
     }
   };
 
@@ -110,28 +93,32 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   };
 
   const bentoCompartmentThemes: Record<string, { bg: string; icon: string; text: string; border: string }> = {
-    slot_role: { bg: 'bg-rose-50/80', icon: '🍱', text: 'text-rose-950', border: 'border-rose-400' },
-    slot_audience: { bg: 'bg-cyan-50/80', icon: '🍚', text: 'text-cyan-950', border: 'border-cyan-400' },
-    slot_context: { bg: 'bg-amber-50/80', icon: '🥗', text: 'text-amber-950', border: 'border-amber-400' },
-    slot_format: { bg: 'bg-lime-50/80', icon: '🥢', text: 'text-lime-950', border: 'border-lime-400' }
+    slot_role: { bg: 'bg-rose-50', icon: '🍱', text: 'text-rose-950', border: 'border-rose-400' },
+    slot_audience: { bg: 'bg-cyan-50', icon: '🍚', text: 'text-cyan-950', border: 'border-cyan-400' },
+    slot_context: { bg: 'bg-amber-50', icon: '🥗', text: 'text-amber-950', border: 'border-amber-400' },
+    slot_format: { bg: 'bg-lime-50', icon: '🥢', text: 'text-lime-950', border: 'border-lime-400' }
   };
 
   return (
     <div className="flex flex-col h-full justify-between pb-2 overflow-hidden relative">
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {/* Instruction Header */}
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-extrabold text-xs text-slate-900 tracking-tight flex items-center gap-1.5">
               <span>Briefing Bento Box</span>
               <span className="text-[10px] text-slate-500 font-normal">
-                (Drag chips into compartments)
+                {activeSlotId ? `(Tap ingredient for ${activeSlot?.label})` : `(Tap slot, then ingredient)`}
               </span>
             </h3>
           </div>
 
           <button
-            onClick={clearAllSlots}
+            onClick={() => {
+              clearAllSlots();
+              setActiveSlotId(null);
+              setErrorMessage(null);
+            }}
             className="px-2 py-0.5 bg-white hover:bg-slate-100 border border-black rounded-lg text-[10px] font-bold text-slate-700 shadow-comic-sm flex items-center gap-1 cursor-pointer"
           >
             <RotateCcw className="w-2.5 h-2.5" />
@@ -140,9 +127,9 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
         </div>
 
         {/* AUTHENTIC BENTO BOX CONTAINER */}
-        <div className="p-3 bg-stone-900 border-3 border-black rounded-3xl shadow-comic relative ring-2 ring-red-950/40">
+        <div className="p-2.5 bg-stone-900 border-3 border-black rounded-3xl shadow-comic relative ring-2 ring-red-950/40">
           {/* Bento Brand Stamp */}
-          <div className="flex items-center justify-between pb-2 px-1 text-[10px] font-black uppercase tracking-wider text-amber-400/90 font-mono">
+          <div className="flex items-center justify-between pb-1.5 px-1 text-[9px] font-black uppercase tracking-wider text-amber-400/90 font-mono">
             <span>ACME BENTO • 4-PILLAR TRAY</span>
             <span className="text-stone-400">#2.1</span>
           </div>
@@ -152,18 +139,15 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
             {data.bento_slots.map((slot) => {
               const assignedChip = getChipById(slotAssignments[slot.id]);
               const theme = bentoCompartmentThemes[slot.id] || { bg: 'bg-white', icon: '🍱', text: 'text-slate-900', border: 'border-slate-300' };
-              const isHovered = hoveredSlotId === slot.id;
+              const isActive = activeSlotId === slot.id;
 
               return (
                 <div
                   key={slot.id}
-                  onDragOver={(e) => handleDragOver(e, slot.id)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, slot.id)}
-                  onClick={() => handleSlotTap(slot.id)}
-                  className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer min-h-[92px] flex flex-col justify-between relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.25)] ${
-                    isHovered
-                      ? 'bg-amber-100 border-amber-500 scale-[1.02] ring-2 ring-amber-400'
+                  onClick={() => handleSlotClick(slot.id)}
+                  className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer min-h-[88px] flex flex-col justify-between relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] ${
+                    isActive
+                      ? 'bg-amber-100 border-amber-400 ring-3 ring-amber-300 scale-[1.02]'
                       : assignedChip
                       ? `${theme.bg} ${theme.border} border-solid`
                       : 'bg-stone-900/90 border-dashed border-stone-700 hover:border-stone-500'
@@ -175,12 +159,18 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                       <span>{theme.icon}</span>
                       <span>{slot.label}</span>
                     </span>
-                    <span className="text-[8px] font-bold text-slate-400">
-                      {slot.description}
-                    </span>
+                    {isActive ? (
+                      <span className="text-[8px] font-black uppercase bg-black text-amber-300 px-1 rounded animate-pulse">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="text-[8px] font-bold text-slate-400">
+                        {slot.description}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Placed Chip or Drop Zone */}
+                  {/* Placed Chip or Selection Prompt */}
                   <div className="mt-1">
                     {assignedChip ? (
                       <div className="inline-flex items-center justify-between w-full px-2 py-1 bg-white border-2 border-black rounded-lg text-xs font-black text-slate-900 shadow-comic-sm">
@@ -188,8 +178,12 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                         <X className="w-3.5 h-3.5 text-rose-600 ml-1 shrink-0 hover:scale-110" />
                       </div>
                     ) : (
-                      <div className="text-[10px] font-bold text-stone-500 text-center py-2 border border-dashed border-stone-800 rounded-lg">
-                        {isHovered ? "Drop here!" : "+ Drop Chip"}
+                      <div className={`text-[10px] font-bold text-center py-1.5 rounded-lg border ${
+                        isActive
+                          ? 'border-amber-400 text-amber-900 bg-amber-50 font-black'
+                          : 'border-dashed border-stone-800 text-stone-500'
+                      }`}>
+                        {isActive ? "👉 Choose ingredient" : "+ Tap to assign"}
                       </div>
                     )}
                   </div>
@@ -211,38 +205,42 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
           </motion.div>
         )}
 
-        {/* SCRAMBLED NOUN CHIPS SHELF */}
-        <div className="bg-white border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+        {/* SCRAMBLED INGREDIENTS CARD (Glows when slot is active) */}
+        <div className={`bg-white border-2 rounded-2xl p-2.5 transition-all shadow-comic-sm ${
+          activeSlotId
+            ? 'border-amber-500 ring-2 ring-amber-300'
+            : 'border-black'
+        }`}>
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1">
-              <Move className="w-3 h-3 text-slate-500" />
-              Available Ingredients ({unassignedChips.length})
+              <Hand className="w-3 h-3 text-slate-500" />
+              {activeSlotId ? (
+                <span className="text-amber-800 font-extrabold">
+                  Select Ingredient for [{activeSlot?.label}]:
+                </span>
+              ) : (
+                <span>Available Ingredients ({unassignedChips.length})</span>
+              )}
             </span>
             <span className="text-[9px] font-medium text-slate-400">
-              Drag or tap to assign
+              Tap to add
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 min-h-[64px] items-center">
+          <div className="flex flex-wrap gap-1.5 min-h-[60px] items-center">
             {unassignedChips.map((chip) => (
-              <div
+              <button
                 key={chip.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, chip.id)}
-                onClick={() => handleChipTap(chip.id)}
-                className={`px-2.5 py-1.5 rounded-xl border-2 border-black text-xs font-bold text-slate-900 shadow-comic-sm active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-grab active:cursor-grabbing select-none ${
-                  selectedChipId === chip.id
-                    ? 'bg-acme-yellow ring-2 ring-black'
-                    : 'bg-slate-100 hover:bg-yellow-200'
-                }`}
+                onClick={() => handleIngredientClick(chip.id)}
+                className="px-2.5 py-1.5 rounded-xl border-2 border-black text-xs font-bold text-slate-900 bg-slate-100 hover:bg-yellow-200 active:bg-acme-yellow shadow-comic-sm active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
               >
                 {chip.text}
-              </div>
+              </button>
             ))}
 
             {unassignedChips.length === 0 && (
               <span className="text-xs text-slate-400 italic py-1 mx-auto">
-                All 4 slots filled! Tap Simulate below.
+                All 4 slots filled! Ready to test below.
               </span>
             )}
           </div>
@@ -260,7 +258,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
         </button>
       </div>
 
-      {/* FULL SUCCESS OVERLAY MODAL (Confetti-Free, Overlay with Replay option) */}
+      {/* FULL SUCCESS OVERLAY MODAL (Confetti-Free, Coach Notes, Overlay with Replay option) */}
       <AnimatePresence>
         {isSolved && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
@@ -291,12 +289,11 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                 </div>
               </div>
 
-              {/* Sam's Satisfied Character Reaction Card */}
+              {/* Sam's Satisfied Character Reaction Card (Just the emoji avatar) */}
               <div className="bg-white border-2 border-black rounded-xl p-2.5 shadow-comic-sm">
                 <CharacterAvatar
                   name="Sam"
                   role="L&D Lead"
-                  avatar="🥪"
                   mood="satisfied"
                   quote={data.success_resolution.character_reaction_quote}
                   size="sm"
@@ -313,14 +310,14 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                 </p>
               </div>
 
-              {/* Modal Action Buttons: Unlock Field Guide + Replay Option */}
+              {/* Action Buttons: Unlock Coach Notes + Replay Option */}
               <div className="space-y-2 pt-1">
                 <button
                   onClick={openFieldGuide}
                   className="w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Unlock Field Guide Card</span>
+                  <span>Unlock Coach Notes Card</span>
                 </button>
 
                 <button

@@ -77,13 +77,13 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Sticky Next Step Button */}
+      {/* Sticky Next Step Button: Open Workbench */}
       <div className="pt-2">
         <button
           onClick={() => setCurrentTab('workbench')}
           className="w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-extrabold text-xs text-slate-900 shadow-comic flex items-center justify-center gap-2 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
         >
-          <span>Open Bento Workbench</span>
+          <span>Open Workbench</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

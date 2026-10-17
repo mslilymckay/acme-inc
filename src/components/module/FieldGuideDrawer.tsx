@@ -30,7 +30,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             {/* Drag Handle */}
             <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-2 shrink-0" />
 
-            {/* Header */}
+            {/* Header: Coach Notes */}
             <div className="flex items-center justify-between pb-2 border-b-2 border-black/10 shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-acme-yellow border-2 border-black flex items-center justify-center shadow-comic-sm">
@@ -38,7 +38,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
                 </div>
                 <div>
                   <span className="text-[9px] font-black uppercase tracking-wider text-slate-500 block">
-                    Field Guide Dossier #{caseId}
+                    Coach Notes Dossier #{caseId}
                   </span>
                   <h3 className="font-black text-sm text-slate-900 leading-tight">
                     {data.title}

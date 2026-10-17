@@ -3,7 +3,7 @@ import React from 'react';
 interface CharacterAvatarProps {
   name: string;
   role: string;
-  avatar: string;
+  avatar?: string;
   mood?: 'stressed' | 'thinking' | 'satisfied';
   size?: 'sm' | 'md' | 'lg';
   quote?: string;
@@ -12,47 +12,39 @@ interface CharacterAvatarProps {
 export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   name,
   role,
-  avatar,
   mood = 'stressed',
   size = 'md',
   quote
 }) => {
-  // Cartoon emoji mapping matching Bob's Burgers deadpan / Rick & Morty vibes
-  const moodEmoji = {
+  // Just the emoji for character mood/expression
+  const emoji = {
     stressed: '🥱',
     thinking: '🧐',
     satisfied: '😏'
   }[mood];
 
   const sizeClasses = {
-    sm: 'w-10 h-10 text-xl',
-    md: 'w-14 h-14 text-2xl',
-    lg: 'w-20 h-20 text-4xl'
+    sm: 'text-2xl',
+    md: 'text-3xl',
+    lg: 'text-4xl'
   }[size];
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative">
-        <div
-          className={`${sizeClasses} bg-acme-yellow border-2 border-black rounded-2xl flex items-center justify-center shadow-comic-sm transition-transform active:scale-95`}
-        >
-          <span>{avatar}</span>
-        </div>
-        {/* Mood indicator badge */}
-        <div className="absolute -bottom-1 -right-1 bg-white border border-black rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-comic-sm">
-          {moodEmoji}
-        </div>
-      </div>
+    <div className="flex items-center gap-2.5">
+      {/* Just the emoji avatar */}
+      <span className={`${sizeClasses} select-none leading-none shrink-0`}>
+        {emoji}
+      </span>
 
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <h3 className="font-bold text-slate-900 text-sm tracking-tight">{name}</h3>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-slate-200 border border-black/40 rounded-full text-slate-700">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <h3 className="font-black text-slate-900 text-xs tracking-tight truncate">{name}</h3>
+          <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 bg-slate-100 border border-black/20 rounded-full text-slate-700 shrink-0">
             {role}
           </span>
         </div>
         {quote && (
-          <p className="text-xs text-slate-600 italic mt-0.5 line-clamp-1">
+          <p className="text-[11px] text-slate-600 italic mt-0.5 line-clamp-1 leading-snug">
             "{quote}"
           </p>
         )}
