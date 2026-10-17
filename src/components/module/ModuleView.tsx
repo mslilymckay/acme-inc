@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Sparkles, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../store/useGameStore';
@@ -23,25 +23,29 @@ export const ModuleView: React.FC = () => {
     openFieldGuide
   } = useGameStore();
 
-  const caseData = cases[currentCaseId];
+  const [isXpFlashing, setIsXpFlashing] = useState(false);
 
-  // Auto-dismiss XP toast after 2.5 seconds
+  // Trigger internal flash when XP changes
   useEffect(() => {
     if (xpToast) {
+      setIsXpFlashing(true);
       const timer = setTimeout(() => {
+        setIsXpFlashing(false);
         clearXpToast();
-      }, 2500);
+      }, 1800);
       return () => clearTimeout(timer);
     }
   }, [xpToast, clearXpToast]);
 
+  const caseData = cases[currentCaseId];
+
   if (!caseData) {
     return (
-      <div className="p-8 text-center">
-        <p className="font-bold">Case not found.</p>
+      <div className="p-8 text-center flex flex-col items-center justify-center h-full">
+        <p className="font-bold text-slate-800">Case not found.</p>
         <button
           onClick={() => setActiveView('HOME')}
-          className="mt-4 px-4 py-2 bg-acme-yellow border-2 border-black rounded-xl font-bold shadow-comic-sm"
+          className="mt-4 px-4 py-2 bg-acme-yellow border-2 border-black rounded-xl font-bold shadow-comic-sm cursor-pointer"
         >
           Back
         </button>
@@ -78,29 +82,42 @@ export const ModuleView: React.FC = () => {
           </h2>
         </div>
 
-        {/* XP button/pill (no 'XP') */}
-        <div className="relative">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-black rounded-full shadow-comic-sm">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-            <span className="text-xs font-black text-slate-900 font-mono">
-              {userXp}
-            </span>
+        {/* XP button/pill with Slot-Machine roll transition and flash (No top overflow) */}
+        <motion.div
+          animate={isXpFlashing ? {
+            scale: [1, 1.15, 0.95, 1.05, 1],
+            backgroundColor: ['#ffffff', '#fef08a', '#86efac', '#ffffff']
+          } : { scale: 1, backgroundColor: '#ffffff' }}
+          transition={{ duration: 0.6 }}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-black shadow-comic-sm transition-colors ${
+            isXpFlashing ? 'ring-2 ring-amber-400' : ''
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />
+          
+          {/* Slot-Machine Roll for the XP number */}
+          <div className="relative overflow-hidden h-4 min-w-[28px] flex items-center justify-center font-mono font-black text-xs text-slate-900">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={userXp}
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -16, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="block leading-none"
+              >
+                {userXp}
+              </motion.span>
+            </AnimatePresence>
           </div>
 
-          {/* Floating XP Toast */}
-          <AnimatePresence>
-            {xpToast && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                animate={{ opacity: 1, y: -24, scale: 1 }}
-                exit={{ opacity: 0, y: -35 }}
-                className="absolute right-0 top-0 bg-emerald-500 text-white font-black text-[11px] px-2 py-0.5 rounded-full border border-black shadow-comic-sm pointer-events-none"
-              >
-                {xpToast}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+          {/* Flash bonus indicator inside the pill */}
+          {isXpFlashing && xpToast && (
+            <span className="text-[10px] font-black text-emerald-700 font-mono animate-pulse">
+              {xpToast}
+            </span>
+          )}
+        </motion.div>
       </header>
 
       {/* Sub-Tab Navigation Bar */}
@@ -126,7 +143,7 @@ export const ModuleView: React.FC = () => {
         {/* Quick Coach Notes Drawer trigger if case is completed */}
         {caseData.status === 'completed' && (
           <button
-            onClick={() => openFieldGuide()}
+            onClick={() => openFieldGuide(caseData.id)}
             className="w-7 h-7 rounded-xl bg-amber-100 border border-black flex items-center justify-center text-xs shadow-comic-sm ml-1 cursor-pointer"
             title="View Coach Notes"
           >

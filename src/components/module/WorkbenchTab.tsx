@@ -93,10 +93,10 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   };
 
   const bentoCompartmentThemes: Record<string, { bg: string; icon: string; text: string; border: string }> = {
-    slot_role: { bg: 'bg-rose-50', icon: '🍱', text: 'text-rose-950', border: 'border-rose-400' },
-    slot_audience: { bg: 'bg-cyan-50', icon: '🍚', text: 'text-cyan-950', border: 'border-cyan-400' },
-    slot_context: { bg: 'bg-amber-50', icon: '🥗', text: 'text-amber-950', border: 'border-amber-400' },
-    slot_format: { bg: 'bg-lime-50', icon: '🥢', text: 'text-lime-950', border: 'border-lime-400' }
+    slot_role: { bg: 'bg-rose-50', icon: '🍱', text: 'text-rose-950', border: 'border-rose-300' },
+    slot_audience: { bg: 'bg-cyan-50', icon: '🍚', text: 'text-cyan-950', border: 'border-cyan-300' },
+    slot_context: { bg: 'bg-amber-50', icon: '🥗', text: 'text-amber-950', border: 'border-amber-300' },
+    slot_format: { bg: 'bg-lime-50', icon: '🥢', text: 'text-lime-950', border: 'border-lime-300' }
   };
 
   return (
@@ -126,16 +126,16 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
           </button>
         </div>
 
-        {/* AUTHENTIC BENTO BOX CONTAINER */}
-        <div className="p-2.5 bg-stone-900 border-3 border-black rounded-3xl shadow-comic relative ring-2 ring-red-950/40">
+        {/* AUTHENTIC BENTO BOX CONTAINER (Gray outer border, LIGHT inner container and slots) */}
+        <div className="p-2.5 bg-stone-900 border-3 border-black rounded-3xl shadow-comic relative ring-2 ring-stone-700/60">
           {/* Bento Brand Stamp */}
-          <div className="flex items-center justify-between pb-1.5 px-1 text-[9px] font-black uppercase tracking-wider text-amber-400/90 font-mono">
+          <div className="flex items-center justify-between pb-1.5 px-1 text-[9px] font-black uppercase tracking-wider text-amber-400 font-mono">
             <span>ACME BENTO • 4-PILLAR TRAY</span>
-            <span className="text-stone-400">#2.1</span>
+            <span className="text-stone-300">#2.1</span>
           </div>
 
-          {/* 4 Partitioned Compartments Grid */}
-          <div className="grid grid-cols-2 gap-2 bg-stone-950 p-2 rounded-2xl border-2 border-stone-800">
+          {/* LIGHT INNER CONTAINER */}
+          <div className="grid grid-cols-2 gap-2 bg-stone-100 p-2 rounded-2xl border-2 border-stone-300 shadow-inner">
             {data.bento_slots.map((slot) => {
               const assignedChip = getChipById(slotAssignments[slot.id]);
               const theme = bentoCompartmentThemes[slot.id] || { bg: 'bg-white', icon: '🍱', text: 'text-slate-900', border: 'border-slate-300' };
@@ -145,12 +145,12 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                 <div
                   key={slot.id}
                   onClick={() => handleSlotClick(slot.id)}
-                  className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer min-h-[88px] flex flex-col justify-between relative shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] ${
+                  className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer min-h-[88px] flex flex-col justify-between relative shadow-xs ${
                     isActive
-                      ? 'bg-amber-100 border-amber-400 ring-3 ring-amber-300 scale-[1.02]'
+                      ? 'bg-yellow-50 border-amber-500 ring-3 ring-amber-300 scale-[1.02]'
                       : assignedChip
-                      ? `${theme.bg} ${theme.border} border-solid`
-                      : 'bg-stone-900/90 border-dashed border-stone-700 hover:border-stone-500'
+                      ? `${theme.bg} ${theme.border} border-solid shadow-comic-sm`
+                      : 'bg-white border-dashed border-stone-300 hover:border-stone-400'
                   }`}
                 >
                   {/* Compartment Label & Bento Icon */}
@@ -180,10 +180,10 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                     ) : (
                       <div className={`text-[10px] font-bold text-center py-1.5 rounded-lg border ${
                         isActive
-                          ? 'border-amber-400 text-amber-900 bg-amber-50 font-black'
-                          : 'border-dashed border-stone-800 text-stone-500'
+                          ? 'border-amber-400 text-amber-900 bg-amber-100/60 font-black'
+                          : 'border-dashed border-stone-200 text-slate-400 bg-stone-50/50'
                       }`}>
-                        {isActive ? "👉 Choose ingredient" : "+ Tap to assign"}
+                        {isActive ? "👉 Pick ingredient" : "+ Tap to assign"}
                       </div>
                     )}
                   </div>
@@ -205,7 +205,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
           </motion.div>
         )}
 
-        {/* SCRAMBLED INGREDIENTS CARD (Glows when slot is active) */}
+        {/* SCRAMBLED INGREDIENTS CARD */}
         <div className={`bg-white border-2 rounded-2xl p-2.5 transition-all shadow-comic-sm ${
           activeSlotId
             ? 'border-amber-500 ring-2 ring-amber-300'
@@ -258,7 +258,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
         </button>
       </div>
 
-      {/* FULL SUCCESS OVERLAY MODAL (Confetti-Free, Coach Notes, Overlay with Replay option) */}
+      {/* FULL SUCCESS OVERLAY MODAL */}
       <AnimatePresence>
         {isSolved && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
@@ -313,7 +313,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
               {/* Action Buttons: Unlock Coach Notes + Replay Option */}
               <div className="space-y-2 pt-1">
                 <button
-                  onClick={openFieldGuide}
+                  onClick={() => openFieldGuide(caseId)}
                   className="w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4" />

@@ -54,6 +54,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   setActiveView: (view) => set({ activeView: view }),
 
   setCurrentCase: (caseId) => {
+    // Strictly sanitize caseId to prevent event objects from corrupting store
+    if (typeof caseId !== 'string' || !caseId) return;
+
     const caseData = get().cases[caseId];
     if (!caseData) return;
 
@@ -75,6 +78,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   setCurrentTab: (tab) => set({ currentTab: tab }),
 
   discoverHotspot: (caseId, hotspot) => {
+    if (typeof caseId !== 'string' || !hotspot) return;
+
     const state = get();
     const currentDiscovered = state.discoveredHotspots[caseId] || [];
     const isNew = !currentDiscovered.includes(hotspot.id);
@@ -86,7 +91,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({
         activeHotspotClue: hotspot,
         userXp: newXp,
-        xpToast: `+${hotspot.xp_value || 25} XP`,
+        xpToast: `+${hotspot.xp_value || 25}`,
         discoveredHotspots: {
           ...state.discoveredHotspots,
           [caseId]: newDiscovered
@@ -181,7 +186,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         cases: updatedCases,
         unlockedBadges: newBadges,
         userXp: wasAlreadyCompleted ? userXp : userXp + 100,
-        xpToast: wasAlreadyCompleted ? null : "+100 XP"
+        xpToast: wasAlreadyCompleted ? null : "+100"
       });
 
       return true;
@@ -191,7 +196,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   openFieldGuide: (caseId) => {
-    if (caseId) {
+    // Sanitize: only set currentCaseId if caseId is a valid string
+    if (typeof caseId === 'string' && caseId) {
       set({ currentCaseId: caseId, showFieldGuideModal: true });
     } else {
       set({ showFieldGuideModal: true });
@@ -201,8 +207,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   closeFieldGuide: () => set({ showFieldGuideModal: false }),
 
   replayCase: (caseId) => {
+    const validId = typeof caseId === 'string' && caseId ? caseId : get().currentCaseId;
     set({
-      currentCaseId: caseId,
+      currentCaseId: validId,
       currentTab: 'workbench',
       activeView: 'MODULE',
       isSolved: false,
