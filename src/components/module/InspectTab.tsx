@@ -38,7 +38,7 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data }) => {
           </div>
         </div>
 
-        {/* Glowing Warning Panel (The Bento Box Intro) */}
+        {/* Glowing Warning Panel (The 4 Prompt Cards Intro) */}
         <div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-3 shadow-comic-sm relative overflow-hidden">
           <div className="flex items-start gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm">
@@ -55,22 +55,22 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data }) => {
             </div>
           </div>
 
-          {/* 4 Bento Compartment Badges Preview */}
+          {/* 4 Index Card Badges Preview */}
           <div className="mt-2.5 pt-2 border-t border-amber-300/60 grid grid-cols-2 gap-1.5">
-            <div className="bg-white border border-rose-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-rose-700 block uppercase">🍱 1. Role</span>
+            <div className="bg-white border-2 border-rose-300 rounded-lg p-1.5 text-center shadow-xs">
+              <span className="text-[9px] font-extrabold text-rose-700 block uppercase">1. Role Card</span>
               <span className="text-[9px] text-slate-500">Who are you?</span>
             </div>
-            <div className="bg-white border border-cyan-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-cyan-700 block uppercase">🍚 2. Audience</span>
+            <div className="bg-white border-2 border-cyan-300 rounded-lg p-1.5 text-center shadow-xs">
+              <span className="text-[9px] font-extrabold text-cyan-700 block uppercase">2. Audience Card</span>
               <span className="text-[9px] text-slate-500">Who is reading?</span>
             </div>
-            <div className="bg-white border border-amber-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-amber-700 block uppercase">🥗 3. Context</span>
+            <div className="bg-white border-2 border-amber-300 rounded-lg p-1.5 text-center shadow-xs">
+              <span className="text-[9px] font-extrabold text-amber-700 block uppercase">3. Context Card</span>
               <span className="text-[9px] text-slate-500">What is the goal?</span>
             </div>
-            <div className="bg-white border border-lime-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-lime-700 block uppercase">🥢 4. Format</span>
+            <div className="bg-white border-2 border-lime-300 rounded-lg p-1.5 text-center shadow-xs">
+              <span className="text-[9px] font-extrabold text-lime-700 block uppercase">4. Format Card</span>
               <span className="text-[9px] text-slate-500">How should it look?</span>
             </div>
           </div>

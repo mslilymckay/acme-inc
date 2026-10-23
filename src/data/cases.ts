@@ -190,11 +190,11 @@ export const INITIAL_CASES: Record<string, CaseData> = {
     level: 2,
     level_name: "Prompting",
     badge_name: "The Master Briefer",
-    badge_icon: "🍱",
+    badge_icon: "🗓️",
     status: "active",
     home_card: {
       hook: "Sam's email is a corporate snoozefest. Help him fix the brief.",
-      icon: "🍱"
+      icon: "🗓️"
     },
     module_data: {
       observe_tab: {
@@ -224,15 +224,15 @@ export const INITIAL_CASES: Record<string, CaseData> = {
         crime_scene_prompt: "Write an email about the new manager training.",
         warning_panel: {
           title: "Warning: Insufficient Context",
-          body: "The AI is guessing your intent. A sufficient brief requires four distinct ingredients in your 'Bento Box': Role (Who are you?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
+          body: "The AI is guessing your intent. A sufficient brief requires four distinct cards on your Desk Calendar: Role (Who are you?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
         }
       },
       workbench_tab: {
         bento_slots: [
-          { id: "slot_role", label: "Role", description: "Who is speaking?", colorClass: "border-acme-pink bg-rose-50 text-rose-900" },
-          { id: "slot_audience", label: "Audience", description: "Who is reading?", colorClass: "border-acme-cyan bg-cyan-50 text-cyan-900" },
-          { id: "slot_context", label: "Context", description: "What is the goal?", colorClass: "border-acme-amber bg-amber-50 text-amber-900" },
-          { id: "slot_format", label: "Format", description: "How is it structured?", colorClass: "border-acme-lime bg-lime-50 text-lime-900" }
+          { id: "slot_role", label: "Role", description: "Who is speaking?", colorClass: "border-rose-400 bg-rose-50 text-rose-900" },
+          { id: "slot_audience", label: "Audience", description: "Who is reading?", colorClass: "border-cyan-400 bg-cyan-50 text-cyan-900" },
+          { id: "slot_context", label: "Context", description: "What is the goal?", colorClass: "border-amber-400 bg-amber-50 text-amber-900" },
+          { id: "slot_format", label: "Format", description: "How is it structured?", colorClass: "border-lime-400 bg-lime-50 text-lime-900" }
         ],
         available_chips: [
           { id: "chip_ld", text: "L&D Lead", type: "correct", category: "role" },
@@ -250,7 +250,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
           "slot_format": "chip_bullets"
         },
         success_resolution: {
-          heading: "Case Solved: Bento Assembled!",
+          heading: "Case Solved: Brief Assembled!",
           message: "Sam's new brief gave Cortex the exact structure it needed.",
           character_reaction_emoji: "😏",
           character_reaction_quote: "Wait... it's under 150 words, has the registration link, and didn't mention 'synergy' once? I'm taking an early lunch.",
@@ -259,16 +259,16 @@ export const INITIAL_CASES: Record<string, CaseData> = {
       }
     },
     field_guide_data: {
-      title: "The Briefing Bento Box",
-      visual_type: "bento_diagram",
-      summary: "AI can't read your mind. Every rock-solid prompt packs four balanced compartments:",
+      title: "The 4-Card Desk Calendar",
+      visual_type: "desk_calendar",
+      summary: "AI can't read your mind. Every rock-solid prompt pins four essential cards to the desk calendar:",
       content_bullets: [
-        "Role: Ground the AI in a specific persona and authority level.",
-        "Audience: Define exactly who will read or act on the response.",
-        "Context: Provide the core facts, constraints, and deadline.",
-        "Format: Specify length, bullet points, tone, and structural boundaries."
+        "Role Card: Ground the AI in a specific persona and authority level.",
+        "Audience Card: Define exactly who will read or act on the response.",
+        "Context Card: Provide the core facts, constraints, and deadline.",
+        "Format Card: Specify length, bullet points, tone, and structural boundaries."
       ],
-      takeaway: "Order doesn't matter, but structure does! Pack the Bento Box before you hit send."
+      takeaway: "Order doesn't matter, but structure does! Lay out your four cards before you hit send."
     }
   },
   "2.2": {

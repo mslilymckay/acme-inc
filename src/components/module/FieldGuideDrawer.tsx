@@ -38,7 +38,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
                 </div>
                 <div>
                   <span className="text-[9px] font-black uppercase tracking-wider text-slate-500 block">
-                    Coach Notes Dossier #{caseId}
+                    Incident File #{caseId}
                   </span>
                   <h3 className="font-black text-sm text-slate-900 leading-tight">
                     {data.title}
@@ -56,27 +56,27 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
 
             {/* Compact Body Content (Fits 100% without scroll) */}
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
-              {/* Visual Bento Box Diagram */}
+              {/* Visual Desk Calendar Diagram */}
               <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 block mb-1.5 text-center">
-                  🍱 The 4 Bento Briefing Compartments
+                  🗓️ The 4-Card Desk Calendar Layout
                 </span>
 
                 <div className="grid grid-cols-2 gap-1.5">
                   <div className="bg-rose-100 border border-rose-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-rose-900 block uppercase">1. Role</span>
+                    <span className="text-[9px] font-black text-rose-900 block uppercase">1. Role Card</span>
                     <p className="text-[10px] font-medium text-rose-800">Who is the AI?</p>
                   </div>
                   <div className="bg-cyan-100 border border-cyan-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-cyan-900 block uppercase">2. Audience</span>
+                    <span className="text-[9px] font-black text-cyan-900 block uppercase">2. Audience Card</span>
                     <p className="text-[10px] font-medium text-cyan-800">Who is reading?</p>
                   </div>
                   <div className="bg-amber-100 border border-amber-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-amber-900 block uppercase">3. Context</span>
+                    <span className="text-[9px] font-black text-amber-900 block uppercase">3. Context Card</span>
                     <p className="text-[10px] font-medium text-amber-800">What are the facts?</p>
                   </div>
                   <div className="bg-lime-100 border border-lime-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-lime-900 block uppercase">4. Format</span>
+                    <span className="text-[9px] font-black text-lime-900 block uppercase">4. Format Card</span>
                     <p className="text-[10px] font-medium text-lime-800">Length & structure</p>
                   </div>
                 </div>
