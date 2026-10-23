@@ -8,19 +8,34 @@ interface CaseCardProps {
 }
 
 export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
-  const { setCurrentCase, openFieldGuide } = useGameStore();
+  const { setCurrentCase, openFieldGuide, openPrototypeWipModal } = useGameStore();
 
   const isCompleted = caseData.status === 'completed';
   const isActive = caseData.status === 'active';
   const isLocked = caseData.status === 'locked';
 
   const handleClick = () => {
+    if (caseData.level === 1) {
+      openPrototypeWipModal(
+        `Case ${caseData.id}: Level 1 Coach Notes`,
+        "This is a partial prototype. Complete Level 2 cases to experience the full interactive workflow and view their Coach Notes!",
+        "LEVEL 1 CASE"
+      );
+      return;
+    }
+
     if (isActive) {
       // "Open" state: click to open module
       setCurrentCase(caseData.id);
     } else if (isCompleted) {
       // "Closed" state: click to open Coach Notes
       openFieldGuide(caseData.id);
+    } else if (isLocked) {
+      openPrototypeWipModal(
+        `Case ${caseData.id}: ${caseData.title}`,
+        "This is a partial prototype. Levels 3, 4, and 5 (Collaboration, Skills, and Tasks & Agents) are currently under development. Experience Level 2: Prompt Building to test the core mechanics!",
+        "FUTURE CASE"
+      );
     }
   };
 
@@ -94,9 +109,13 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
     );
   }
 
-  // State 3: Locked
+  // State 3: Locked (Clickable to show Prototype WIP info)
   return (
-    <div className="w-full text-left p-2.5 rounded-2xl border border-slate-300 bg-slate-100/80 opacity-60 flex flex-col justify-between min-h-[112px] cursor-not-allowed select-none">
+    <button
+      onClick={handleClick}
+      type="button"
+      className="w-full text-left p-2.5 rounded-2xl border border-slate-300 bg-slate-100/80 opacity-60 hover:opacity-85 hover:border-slate-400 transition-all flex flex-col justify-between min-h-[112px] cursor-pointer select-none active:scale-[0.98]"
+    >
       <div className="flex items-start justify-between w-full">
         <span className="text-lg opacity-40 grayscale">{caseData.home_card.icon}</span>
         <div className="p-1 rounded-full bg-slate-200 text-slate-500">
@@ -113,9 +132,10 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         </h4>
       </div>
 
-      <div className="text-[9px] font-bold text-slate-400 pt-1 border-t border-slate-200">
-        Locked
+      <div className="text-[9px] font-bold text-slate-400 pt-1 border-t border-slate-200 flex items-center justify-between w-full">
+        <span>Locked</span>
+        <span className="text-[8px] uppercase tracking-wider text-slate-400">Preview ➔</span>
       </div>
-    </div>
+    </button>
   );
 };

@@ -1,6 +1,14 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { ActiveView, CaseData, Hotspot } from '../types/game';
 import { INITIAL_CASES } from '../data/cases';
+
+export interface PrototypeWipInfo {
+  isOpen: boolean;
+  title: string;
+  message: string;
+  badge?: string;
+}
 
 interface GameState {
   userXp: number;
@@ -16,6 +24,14 @@ interface GameState {
   showFieldGuideModal: boolean;
   unlockedBadges: string[];
 
+  // Prototype & Feedback Modals
+  hasSeenWelcomeModal: boolean;
+  showWelcomeModal: boolean;
+  hasSeenL2Celebration: boolean;
+  showL2CelebrationModal: boolean;
+  showFeedbackModal: boolean;
+  prototypeWipModal: PrototypeWipInfo | null;
+
   // Actions
   setActiveView: (view: ActiveView) => void;
   setCurrentCase: (caseId: string) => void;
@@ -30,26 +46,125 @@ interface GameState {
   openFieldGuide: (caseId?: string) => void;
   closeFieldGuide: () => void;
   replayCase: (caseId: string) => void;
+
+  // Prototype Actions
+  openWelcomeModal: () => void;
+  closeWelcomeModal: () => void;
+  openL2CelebrationModal: () => void;
+  closeL2CelebrationModal: () => void;
+  openFeedbackModal: () => void;
+  closeFeedbackModal: () => void;
+  openPrototypeWipModal: (title: string, message: string, badge?: string) => void;
+  closePrototypeWipModal: () => void;
+  resetL2Progress: () => void;
+  resetEntireDemo: () => void;
 }
 
-export const useGameStore = create<GameState>((set, get) => ({
-  userXp: 150, // Starting XP from cleared Level 1 mysteries
-  xpToast: null,
-  cases: INITIAL_CASES,
-  activeView: 'HOME',
-  currentCaseId: '2.1',
-  currentTab: 'observe',
-  discoveredHotspots: {},
-  activeHotspotClue: null,
-  slotAssignments: {
-    slot_role: null,
-    slot_audience: null,
-    slot_context: null,
-    slot_format: null,
-  },
-  isSolved: false,
-  showFieldGuideModal: false,
-  unlockedBadges: ['The Mental Modelist'],
+export const useGameStore = create<GameState>()(
+  persist(
+    (set, get) => ({
+      userXp: 150, // Starting XP from cleared Level 1 mysteries
+      xpToast: null,
+      cases: INITIAL_CASES,
+      activeView: 'HOME',
+      currentCaseId: '2.1',
+      currentTab: 'observe',
+      discoveredHotspots: {},
+      activeHotspotClue: null,
+      slotAssignments: {
+        slot_role: null,
+        slot_audience: null,
+        slot_context: null,
+        slot_format: null,
+      },
+      isSolved: false,
+      showFieldGuideModal: false,
+      unlockedBadges: ['The Mental Modelist'],
+
+      // Prototype & Feedback Modals
+      hasSeenWelcomeModal: false,
+      showWelcomeModal: true,
+      hasSeenL2Celebration: false,
+      showL2CelebrationModal: false,
+      showFeedbackModal: false,
+      prototypeWipModal: null,
+
+      openWelcomeModal: () => set({ showWelcomeModal: true }),
+      closeWelcomeModal: () => set({ showWelcomeModal: false, hasSeenWelcomeModal: true }),
+
+      openL2CelebrationModal: () => set({ showL2CelebrationModal: true }),
+      closeL2CelebrationModal: () => set({ showL2CelebrationModal: false, hasSeenL2Celebration: true }),
+
+      openFeedbackModal: () => set({ showFeedbackModal: true }),
+      closeFeedbackModal: () => set({ showFeedbackModal: false }),
+
+      openPrototypeWipModal: (title, message, badge) =>
+        set({
+          prototypeWipModal: {
+            isOpen: true,
+            title,
+            message,
+            badge: badge || 'PROTOTYPE PREVIEW'
+          }
+        }),
+
+      closePrototypeWipModal: () => set({ prototypeWipModal: null }),
+
+      resetL2Progress: () => {
+        const updatedCases = { ...get().cases };
+        // Reset 2.1 to active, 2.2 to locked, 2.3 to locked
+        if (updatedCases['2.1']) updatedCases['2.1'] = { ...updatedCases['2.1'], status: 'active' };
+        if (updatedCases['2.2']) updatedCases['2.2'] = { ...updatedCases['2.2'], status: 'locked' };
+        if (updatedCases['2.3']) updatedCases['2.3'] = { ...updatedCases['2.3'], status: 'locked' };
+
+        // Clean out L2 badge
+        const filteredBadges = get().unlockedBadges.filter(b => b !== 'The Master Briefer');
+
+        // Clear L2 hotspots
+        const newDiscovered = { ...get().discoveredHotspots };
+        delete newDiscovered['2.1'];
+        delete newDiscovered['2.2'];
+        delete newDiscovered['2.3'];
+
+        set({
+          cases: updatedCases,
+          unlockedBadges: filteredBadges,
+          discoveredHotspots: newDiscovered,
+          hasSeenL2Celebration: false,
+          showL2CelebrationModal: false,
+          currentCaseId: '2.1',
+          activeView: 'HOME',
+          isSolved: false
+        });
+      },
+
+      resetEntireDemo: () => {
+        set({
+          userXp: 150,
+          xpToast: null,
+          cases: INITIAL_CASES,
+          activeView: 'HOME',
+          currentCaseId: '2.1',
+          currentTab: 'observe',
+          discoveredHotspots: {},
+          activeHotspotClue: null,
+          slotAssignments: {
+            slot_role: null,
+            slot_audience: null,
+            slot_context: null,
+            slot_format: null,
+          },
+          isSolved: false,
+          showFieldGuideModal: false,
+          unlockedBadges: ['The Mental Modelist'],
+          hasSeenWelcomeModal: false,
+          showWelcomeModal: true,
+          hasSeenL2Celebration: false,
+          showL2CelebrationModal: false,
+          showFeedbackModal: false,
+          prototypeWipModal: null
+        });
+      },
 
   setActiveView: (view) => set({ activeView: view }),
 
@@ -232,4 +347,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     });
   }
-}));
+}),
+    {
+      name: 'ai-fluency-game-storage',
+      partialize: (state) => ({
+        userXp: state.userXp,
+        cases: state.cases,
+        unlockedBadges: state.unlockedBadges,
+        discoveredHotspots: state.discoveredHotspots,
+        hasSeenWelcomeModal: state.hasSeenWelcomeModal,
+        hasSeenL2Celebration: state.hasSeenL2Celebration,
+      })
+    }
+  )
+);

@@ -1,17 +1,42 @@
-import React, { useState } from 'react';
-import { Sparkles, ArrowRight, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, ArrowRight, BookOpen, Info, MessageSquareHeart } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 import { TrophyCarousel } from './TrophyCarousel';
 import { CaseCard } from './CaseCard';
 import { FieldGuideDrawer } from '../module/FieldGuideDrawer';
 
 export const HomeView: React.FC = () => {
-  const { cases, userXp, setCurrentCase, currentCaseId } = useGameStore();
+  const {
+    cases,
+    userXp,
+    setCurrentCase,
+    currentCaseId,
+    openWelcomeModal,
+    openPrototypeWipModal,
+    openL2CelebrationModal,
+    openFeedbackModal,
+    hasSeenL2Celebration,
+    resetEntireDemo
+  } = useGameStore();
   const [selectedLevel, setSelectedLevel] = useState<number | 'all'>('all');
 
   const casesArray = Object.values(cases);
   const activeCase = casesArray.find(c => c.status === 'active');
   const selectedCaseData = cases[currentCaseId];
+
+  const isL2Completed =
+    cases['2.1']?.status === 'completed' &&
+    cases['2.2']?.status === 'completed' &&
+    cases['2.3']?.status === 'completed';
+
+  useEffect(() => {
+    if (isL2Completed && !hasSeenL2Celebration) {
+      const timer = setTimeout(() => {
+        openL2CelebrationModal();
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isL2Completed, hasSeenL2Celebration, openL2CelebrationModal]);
 
   const levels = [
     { level: 1, name: "Models", badge: "🧠" },
@@ -43,12 +68,33 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
 
-        {/* Global XP Pill */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white border-2 border-black rounded-full shadow-comic-sm">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-          <span className="text-xs font-black text-slate-900 font-mono">
-            {userXp} XP
-          </span>
+        {/* Header Right Actions: POC Info + Interactive XP */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={openWelcomeModal}
+            className="flex items-center gap-1 px-2 py-1 bg-white hover:bg-slate-50 border-2 border-black rounded-full shadow-comic-xs text-[10px] font-black text-slate-800 transition-colors cursor-pointer"
+            title="About this prototype"
+          >
+            <Info className="w-3 h-3 text-purple-700" />
+            <span>POC Info</span>
+          </button>
+
+          <button
+            onClick={() =>
+              openPrototypeWipModal(
+                "Experience Points (XP)",
+                "This is a partial prototype. The MVP will include user settings, progression tracks, and an XP leaderboard. For now, earn XP by discovering flawed output clues and solving Level 2 cases!",
+                "XP LEADERBOARD"
+              )
+            }
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-slate-50 border-2 border-black rounded-full shadow-comic-sm transition-colors cursor-pointer"
+            title="View XP info"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+            <span className="text-xs font-black text-slate-900 font-mono">
+              {userXp} XP
+            </span>
+          </button>
         </div>
       </header>
 
@@ -56,6 +102,41 @@ export const HomeView: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
         {/* Top Trophy Shelf */}
         <TrophyCarousel />
+
+        {/* Level 2 Completion Celebratory Banner */}
+        {isL2Completed && (
+          <div className="p-3 bg-gradient-to-r from-amber-100 via-yellow-100 to-orange-100 border-2 border-black rounded-2xl shadow-comic-sm flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0 pr-2">
+              <span className="text-2xl leading-none">🎉</span>
+              <div className="min-w-0">
+                <span className="text-[10px] font-black uppercase text-amber-950 tracking-wider block">
+                  Level 2 Completed!
+                </span>
+                <span className="text-xs font-bold text-slate-900 block truncate">
+                  Mastered all 3 Prompt Building cases
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={openL2CelebrationModal}
+                className="px-2.5 py-1.5 bg-acme-yellow hover:bg-yellow-300 border-2 border-black rounded-xl text-[10px] font-black text-slate-900 shadow-comic-xs flex items-center gap-1 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+              >
+                <span>Trio</span>
+                <Sparkles className="w-3 h-3 text-amber-600 fill-amber-500" />
+              </button>
+
+              <button
+                onClick={openFeedbackModal}
+                className="px-2.5 py-1.5 bg-white hover:bg-slate-100 border-2 border-black rounded-xl text-[10px] font-black text-slate-900 shadow-comic-xs flex items-center gap-1 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
+              >
+                <MessageSquareHeart className="w-3 h-3 text-purple-700" />
+                <span>Feedback</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Case History Header & Filter Pills */}
         <div className="flex items-center justify-between pt-1">
@@ -116,6 +197,22 @@ export const HomeView: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Prototype Reviewer Footer */}
+        <div className="pt-4 pb-2 text-center text-[10px] text-slate-500 font-mono flex items-center justify-center gap-2">
+          <span>Signal & Noise POC · Level 2</span>
+          <span>•</span>
+          <button
+            onClick={() => {
+              if (window.confirm("Reset all prototype progress to factory start?")) {
+                resetEntireDemo();
+              }
+            }}
+            className="underline hover:text-rose-600 transition-colors cursor-pointer"
+          >
+            Reset Prototype Data
+          </button>
         </div>
       </div>
 

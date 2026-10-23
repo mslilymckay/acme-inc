@@ -3,7 +3,7 @@ import { Award, Lock } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 
 export const TrophyCarousel: React.FC = () => {
-  const { unlockedBadges } = useGameStore();
+  const { unlockedBadges, openPrototypeWipModal, openL2CelebrationModal } = useGameStore();
 
   const badges = [
     { level: 1, name: "The Mental Modelist", icon: "🧠", color: "bg-purple-100 border-purple-500 text-purple-900" },
@@ -12,6 +12,34 @@ export const TrophyCarousel: React.FC = () => {
     { level: 4, name: "The Skill Builder", icon: "🛠️", color: "bg-rose-100 border-rose-500 text-rose-900" },
     { level: 5, name: "The Workflow Maestro", icon: "⚡", color: "bg-emerald-100 border-emerald-500 text-emerald-900" }
   ];
+
+  const handleBadgeClick = (badge: typeof badges[0]) => {
+    const isUnlocked = unlockedBadges.includes(badge.name);
+
+    if (badge.level === 1) {
+      openPrototypeWipModal(
+        "Level 1: The Mental Modelist",
+        "Level 1 (Models) was cleared in the backstory. Level 2 (The Master Briefer) is earnable by completing cases 2.1, 2.2, and 2.3!",
+        "LEVEL 1 BADGE"
+      );
+    } else if (badge.level === 2) {
+      if (isUnlocked) {
+        openL2CelebrationModal();
+      } else {
+        openPrototypeWipModal(
+          "Level 2: The Master Briefer",
+          "This badge unlocks when you complete all three Level 2 cases: Sam (2.1), Liam (2.2), and Chloe (2.3)!",
+          "LEVEL 2 BADGE"
+        );
+      }
+    } else {
+      openPrototypeWipModal(
+        `Level ${badge.level}: ${badge.name}`,
+        "This is a partial prototype. Levels 3, 4, and 5 badges will unlock as subsequent modules are developed.",
+        "FUTURE BADGE"
+      );
+    }
+  };
 
   return (
     <div className="bg-white border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
@@ -33,13 +61,15 @@ export const TrophyCarousel: React.FC = () => {
           const isUnlocked = unlockedBadges.includes(badge.name);
 
           return (
-            <div
+            <button
               key={badge.level}
+              type="button"
+              onClick={() => handleBadgeClick(badge)}
               title={`${badge.name} (Level ${badge.level})`}
-              className={`p-1.5 rounded-xl border transition-all flex flex-col items-center justify-center ${
+              className={`p-1.5 rounded-xl border transition-all flex flex-col items-center justify-center cursor-pointer active:scale-95 ${
                 isUnlocked
-                  ? `${badge.color} border-black shadow-comic-sm`
-                  : 'bg-slate-50 border-slate-200 opacity-40'
+                  ? `${badge.color} border-black shadow-comic-sm hover:scale-105`
+                  : 'bg-slate-50 border-slate-200 opacity-50 hover:opacity-75'
               }`}
             >
               <div className="text-base leading-none relative">
@@ -53,7 +83,7 @@ export const TrophyCarousel: React.FC = () => {
               <span className="text-[9px] font-black uppercase tracking-tight text-center mt-1 truncate w-full">
                 L{badge.level}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>
