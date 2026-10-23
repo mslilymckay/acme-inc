@@ -57,10 +57,10 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
   const isReadyToSimulate = prunedContradictionsCount === totalContradictions && prunedRuleIds.length === totalContradictions;
 
   return (
-    <div className="flex flex-col h-full justify-between pb-2 overflow-hidden relative select-none">
-      <div className="space-y-2">
+    <div className="flex flex-col h-full justify-between pb-1 overflow-y-auto relative select-none">
+      <div className="flex-1 flex flex-col min-h-0 space-y-2">
         {/* Instruction Header */}
-        <div className="flex items-center justify-between px-0.5">
+        <div className="flex items-center justify-between px-0.5 shrink-0">
           <div className="min-w-0 pr-1">
             <h3 className="font-extrabold text-xs text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
               <PenTool className="w-3.5 h-3.5 text-rose-600 shrink-0" />
@@ -80,10 +80,10 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
           </button>
         </div>
 
-        {/* OFFICE CLIPBOARD / NOTEPAD CONTAINER */}
-        <div className="bg-[#fefce8] border-2 border-black rounded-2xl shadow-comic overflow-hidden relative">
-          {/* Metal Clipboard Top */}
-          <div className="bg-stone-800 border-b-2 border-black px-3.5 py-1.5 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-amber-300">
+        {/* OFFICE CLIPBOARD / NOTEPAD CONTAINER (Spans entire available space without internal scroll) */}
+        <div className="flex-1 flex flex-col bg-[#fefce8] border-2 border-black rounded-2xl shadow-comic overflow-hidden min-h-0">
+          {/* Metal Clipboard Top Header */}
+          <div className="bg-stone-800 border-b-2 border-black px-3.5 py-1.5 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-amber-300 shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-slate-300 border border-black inline-block" />
               <span>LIAM'S PROMPT NOTEPAD</span>
@@ -92,21 +92,21 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
           </div>
 
           {/* Progress / Status Sub-bar */}
-          <div className="bg-amber-100/70 border-b border-black/10 px-3 py-1 flex items-center justify-between">
+          <div className="bg-amber-100/70 border-b border-black/10 px-3 py-1 flex items-center justify-between shrink-0">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1">
               <Trash2 className="w-3 h-3 text-rose-600" />
               <span>Contradictions Pruned: {prunedContradictionsCount}/{totalContradictions}</span>
             </span>
 
             {isReadyToSimulate && (
-              <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-500 text-white rounded-full animate-pulse">
+              <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-500 text-white rounded-full animate-pulse font-mono">
                 Ready to Simulate!
               </span>
             )}
           </div>
 
-          {/* Lined Paper List of Rules */}
-          <div className="p-2.5 space-y-2 max-h-[260px] overflow-y-auto">
+          {/* Lined Paper List of Rules (Flexibly distributed, no internal scroll) */}
+          <div className="p-2 flex-1 flex flex-col justify-between gap-1.5 min-h-0">
             {rules.map((rule) => {
               const isPruned = prunedRuleIds.includes(rule.id);
 
@@ -114,7 +114,7 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
                 <div
                   key={rule.id}
                   onClick={() => togglePrune(rule.id)}
-                  className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer relative shadow-xs ${
+                  className={`p-2 rounded-xl border-2 transition-all cursor-pointer relative shadow-xs flex-1 flex flex-col justify-center ${
                     isPruned
                       ? 'bg-rose-50/60 border-rose-400/80 opacity-70'
                       : 'bg-white border-black hover:border-rose-500 shadow-comic-sm hover:scale-[1.01]'
@@ -124,8 +124,8 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
                   }}
                 >
                   {/* Category Tag & Conflict Source */}
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 border border-black/15 text-slate-700 font-mono">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-slate-100 border border-black/15 text-slate-700 font-mono">
                       {rule.category}
                     </span>
 
@@ -136,7 +136,7 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
                     )}
 
                     {isPruned && (
-                      <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 bg-rose-600 text-white rounded font-mono shadow-xs">
+                      <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 bg-rose-600 text-white rounded font-mono shadow-xs">
                         ✕ PRUNED
                       </span>
                     )}
@@ -170,7 +170,7 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-2.5 bg-rose-50 border-2 border-rose-400 rounded-xl flex items-center gap-2 text-xs text-rose-900 font-bold"
+            className="p-2 bg-rose-50 border-2 border-rose-400 rounded-xl flex items-center gap-2 text-xs text-rose-900 font-bold shrink-0"
           >
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span className="leading-snug">{errorMessage}</span>
@@ -179,7 +179,7 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
       </div>
 
       {/* BOTTOM SIMULATE BAR */}
-      <div className="pt-2">
+      <div className="pt-2 shrink-0">
         <button
           onClick={handleSimulate}
           className="w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-extrabold text-xs text-slate-900 shadow-comic flex items-center justify-center gap-2 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"

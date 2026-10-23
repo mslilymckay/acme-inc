@@ -372,13 +372,13 @@ export const INITIAL_CASES: Record<string, CaseData> = {
       }
     },
     field_guide_data: {
-      title: "Signal Over Noise",
+      title: "The Prompt Pruner",
       visual_type: "red_pen_pruner",
       summary: "Eliminate conflicting instructions so the AI can focus on your true goal.",
       content_bullets: [
         "Never ask for opposing lengths (e.g. 'concise summary' vs. 'exhaustive dissertation').",
-        "Stick to one clear persona instead of blending incompatible tones.",
-        "Prune copy-pasted templates down to only what your current task actually requires."
+        "Stick to one clear persona instead of blending incompatible tones (e.g. 'Gen-Z meme intern' vs. 'corporate legal counsel').",
+        "Prune copy-pasted templates down to only what your current task actually requires (e.g. 'quick Slack update' vs. 'regulatory compliance filing')."
       ],
       takeaway: "A 50-word prompt with zero contradictions will beat a 500-word Franken-prompt every single time."
     }

@@ -161,7 +161,10 @@ export const ModuleView: React.FC = () => {
           />
         )}
         {currentTab === 'inspect' && (
-          <InspectTab data={caseData.module_data.inspect_tab} />
+          <InspectTab
+            data={caseData.module_data.inspect_tab}
+            caseId={caseData.id}
+          />
         )}
         {currentTab === 'workbench' && (
           <WorkbenchTab

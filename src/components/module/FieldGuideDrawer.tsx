@@ -66,19 +66,19 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-85">
                       <span className="text-[10px] font-black text-rose-800 uppercase block">
-                        ✕ Contradictory Noise
+                        ✕ Prune the noise
                       </span>
                       <p className="text-[10px] font-semibold text-rose-700 line-through mt-0.5">
                         "18-page audit" + "meme speak"
                       </p>
                       <span className="text-[9px] font-bold text-rose-600 block mt-1">
-                        Prune with Red Pen
+                        Strike out with Red Pen
                       </span>
                     </div>
 
                     <div className="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-2 text-center">
                       <span className="text-[10px] font-black text-emerald-800 uppercase block">
-                        ✓ Harmonious Signal
+                        ✓ Keep it clean
                       </span>
                       <p className="text-[10px] font-semibold text-emerald-700 mt-0.5">
                         "3-bullet Slack update"
