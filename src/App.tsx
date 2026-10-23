@@ -11,7 +11,7 @@ export function App() {
   const { activeView } = useGameStore();
 
   return (
-    <div className="w-full h-full flex flex-col relative font-sans overflow-hidden">
+    <div className="w-full h-full flex flex-col relative font-sans overflow-hidden bg-acme-cream">
       {activeView === 'HOME' && <HomeView />}
       {activeView === 'MODULE' && <ModuleView />}
 

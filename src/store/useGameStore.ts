@@ -8,6 +8,7 @@ export interface PrototypeWipInfo {
   title: string;
   message: string;
   badge?: string;
+  icon?: string;
 }
 
 interface GameState {
@@ -54,7 +55,7 @@ interface GameState {
   closeL2CelebrationModal: () => void;
   openFeedbackModal: () => void;
   closeFeedbackModal: () => void;
-  openPrototypeWipModal: (title: string, message: string, badge?: string) => void;
+  openPrototypeWipModal: (title: string, message: string, badge?: string, icon?: string) => void;
   closePrototypeWipModal: () => void;
   resetL2Progress: () => void;
   resetEntireDemo: () => void;
@@ -98,13 +99,14 @@ export const useGameStore = create<GameState>()(
       openFeedbackModal: () => set({ showFeedbackModal: true }),
       closeFeedbackModal: () => set({ showFeedbackModal: false }),
 
-      openPrototypeWipModal: (title, message, badge) =>
+      openPrototypeWipModal: (title, message, badge, icon) =>
         set({
           prototypeWipModal: {
             isOpen: true,
             title,
             message,
-            badge: badge || 'PROTOTYPE PREVIEW'
+            badge: badge || 'PROTOTYPE PREVIEW',
+            icon: icon || '🚧'
           }
         }),
 

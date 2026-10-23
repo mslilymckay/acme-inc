@@ -12,12 +12,22 @@ export const HotspotClueModal: React.FC<HotspotClueModalProps> = ({ hotspot, onC
   return (
     <AnimatePresence>
       {hotspot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 select-none"
+        >
+          {/* Backdrop click to dismiss */}
+          <div className="absolute inset-0" onClick={onClose} />
+
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="w-full max-w-sm bg-white border-3 border-black rounded-3xl p-5 shadow-comic relative overflow-hidden"
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="w-full max-w-sm bg-white border-3 border-black rounded-3xl p-5 shadow-comic relative z-10 overflow-hidden"
           >
             {/* Top Banner */}
             <div className="flex items-center justify-between pb-3 border-b-2 border-black/10">
@@ -31,8 +41,10 @@ export const HotspotClueModal: React.FC<HotspotClueModalProps> = ({ hotspot, onC
               </div>
 
               <button
+                type="button"
                 onClick={onClose}
-                className="w-7 h-7 rounded-full border border-black flex items-center justify-center hover:bg-slate-100 transition-colors"
+                className="w-7 h-7 rounded-full border border-black flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Dismiss"
               >
                 <X className="w-4 h-4 text-slate-900" />
               </button>
@@ -64,13 +76,14 @@ export const HotspotClueModal: React.FC<HotspotClueModalProps> = ({ hotspot, onC
 
             {/* Acknowledge Button */}
             <button
+              type="button"
               onClick={onClose}
               className="mt-4 w-full py-2.5 bg-acme-yellow hover:bg-yellow-400 border-2 border-black rounded-xl font-extrabold text-xs text-slate-900 shadow-comic active:translate-x-0.5 active:translate-y-0.5 active:shadow-comic-sm transition-all cursor-pointer"
             >
               Add Clue to Case File ➔
             </button>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

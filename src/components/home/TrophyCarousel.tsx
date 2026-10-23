@@ -18,25 +18,33 @@ export const TrophyCarousel: React.FC = () => {
 
     if (badge.level === 1) {
       openPrototypeWipModal(
-        "Level 1: The Mental Modelist",
+        "Level 1 Badge: The Mental Modelist",
         "Level 1 (Models) was cleared in the backstory. Level 2 (The Master Briefer) is earnable by completing cases 2.1, 2.2, and 2.3!",
-        "LEVEL 1 BADGE"
+        "LEVEL 1 BADGE",
+        "🧠"
       );
     } else if (badge.level === 2) {
       if (isUnlocked) {
-        openL2CelebrationModal();
+        openPrototypeWipModal(
+          "Level 2 Badge: The Master Briefer",
+          "You mastered all 3 Level 2 cases! Sam has his planner, Liam pruned his templates, and Chloe injected gold-standard executive voice.",
+          "LEVEL 2 BADGE",
+          "📝"
+        );
       } else {
         openPrototypeWipModal(
-          "Level 2: The Master Briefer",
+          "Badge Locked: Level 2",
           "This badge unlocks when you complete all three Level 2 cases: Sam (2.1), Liam (2.2), and Chloe (2.3)!",
-          "LEVEL 2 BADGE"
+          "BADGE LOCKED",
+          "🔒"
         );
       }
     } else {
       openPrototypeWipModal(
-        `Level ${badge.level}: ${badge.name}`,
-        "This is a partial prototype. Levels 3, 4, and 5 badges will unlock as subsequent modules are developed.",
-        "FUTURE BADGE"
+        `Badge Locked: Level ${badge.level}`,
+        `This is a partial prototype. The "${badge.name}" badge will unlock as subsequent modules are developed.`,
+        `LEVEL ${badge.level} LOCKED`,
+        "🔒"
       );
     }
   };

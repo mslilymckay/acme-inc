@@ -52,7 +52,8 @@ export const HomeView: React.FC = () => {
       openPrototypeWipModal(
         "Level 3 Preview: The Hype Machine Trap",
         "Marcus is waiting for you in Level 3 (Collaboration)! Levels 3–5 are currently under development for the full release. Thank you for testing Level 2: Prompt Building!",
-        "LEVEL 3 PREVIEW"
+        "LEVEL 3 PREVIEW",
+        "🤝"
       );
       return;
     }
@@ -105,7 +106,8 @@ export const HomeView: React.FC = () => {
               openPrototypeWipModal(
                 "Experience Points (XP)",
                 "This is a partial prototype. The MVP will include user settings, progression tracks, and an XP leaderboard. For now, earn XP by discovering flawed output clues and solving Level 2 cases!",
-                "XP LEADERBOARD"
+                "XP LEADERBOARD",
+                "✨"
               )
             }
             className="flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-slate-50 border-2 border-black rounded-full shadow-comic-sm transition-colors cursor-pointer"

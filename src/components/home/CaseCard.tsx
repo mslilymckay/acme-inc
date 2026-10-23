@@ -19,7 +19,8 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
       openPrototypeWipModal(
         `Case ${caseData.id}: Level 1 Coach Notes`,
         "This is a partial prototype. Complete Level 2 cases to experience the full interactive workflow and view their Coach Notes!",
-        "LEVEL 1 CASE"
+        "LEVEL 1 CASE",
+        "🧠"
       );
       return;
     }
@@ -29,7 +30,8 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         openPrototypeWipModal(
           `Level 3 Preview: ${caseData.title}`,
           "Marcus is waiting for you in Level 3 (Collaboration)! Levels 3–5 are currently under development for the full release. Thank you for testing Level 2: Prompt Building!",
-          "LEVEL 3 PREVIEW"
+          "LEVEL 3 PREVIEW",
+          "🤝"
         );
         return;
       }
@@ -44,13 +46,15 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         openPrototypeWipModal(
           `Case ${caseData.id}: Locked`,
           `Complete Case ${prevCaseName} first to unlock this investigation!`,
-          "CASE LOCKED"
+          "CASE LOCKED",
+          "🔒"
         );
       } else {
         openPrototypeWipModal(
           `Case ${caseData.id}: ${caseData.title}`,
           "This is a partial prototype. Levels 3, 4, and 5 (Collaboration, Skills, and Tasks & Agents) are currently under development. Experience Level 2: Prompt Building to test the core mechanics!",
-          "FUTURE CASE"
+          "FUTURE CASE",
+          "🔒"
         );
       }
     }

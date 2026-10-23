@@ -15,7 +15,13 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
   return (
     <AnimatePresence>
       {showFieldGuideModal && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 select-none"
+        >
           {/* Backdrop click to dismiss */}
           <div className="absolute inset-0" onClick={closeFieldGuide} />
 
@@ -47,8 +53,10 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
               </div>
 
               <button
+                type="button"
                 onClick={closeFieldGuide}
                 className="w-7 h-7 rounded-full border border-black flex items-center justify-center hover:bg-slate-100 transition-colors cursor-pointer"
+                title="Dismiss"
               >
                 <X className="w-4 h-4 text-slate-900" />
               </button>
@@ -58,95 +66,73 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
               {/* Visual Diagram: Dynamic by visual_type */}
               {data.visual_type === 'card_swapper' || data.visual_type === 'few_shot_card' ? (
-                <div className="bg-[#fed7aa] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
-                  <div className="bg-[#fb923c] border-b-2 border-black px-3 py-1 flex items-center justify-between text-[10px] font-mono font-black text-slate-900 uppercase">
-                    <span className="flex items-center gap-1.5">
-                      <FolderOpen className="w-3.5 h-3.5 text-slate-900" />
-                      <span>The Example Injector Protocol</span>
+                /* Chloe's Few-Shot Folder Diagram */
+                <div className="bg-amber-50/80 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <FolderOpen className="w-4 h-4 text-amber-700" />
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-800">
+                      Few-Shot Reference Architecture
                     </span>
-                    <span className="text-amber-950 text-[9px] font-bold">FEW-SHOT</span>
                   </div>
-
-                  <div className="p-2.5">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-90">
-                        <span className="text-[10px] font-black text-rose-800 uppercase block">
-                          ✕ Abstract Adjectives
-                        </span>
-                        <p className="text-[10px] font-semibold text-rose-700 mt-0.5 line-through">
-                          "visionary yet grounded"
-                        </p>
-                        <span className="text-[9px] font-bold text-rose-600 block mt-1">
-                          AI Guesses Infomercial
-                        </span>
-                      </div>
-
-                      <div className="bg-white border-2 border-purple-600 rounded-xl p-2 text-center shadow-xs">
-                        <span className="text-[10px] font-black text-purple-900 uppercase block">
-                          ✓ 1 Past Reference File
-                        </span>
-                        <p className="text-[10px] font-bold text-purple-800 mt-0.5">
-                          "2025 CEO Town Hall"
-                        </p>
-                        <span className="text-[9px] font-bold text-purple-700 block mt-1">
-                          Anchors Exact Voice
-                        </span>
-                      </div>
+                  <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                    <div className="p-2 bg-white border border-black/20 rounded-xl">
+                      <span className="text-base block mb-0.5">📂</span>
+                      <span className="text-[10px] font-black text-slate-900 block uppercase">1. Curate Real Pairs</span>
+                      <p className="text-[10px] text-slate-600 leading-tight">Provide authentic input + gold-standard output</p>
+                    </div>
+                    <div className="p-2 bg-white border border-black/20 rounded-xl">
+                      <span className="text-base block mb-0.5">🎯</span>
+                      <span className="text-[10px] font-black text-slate-900 block uppercase">2. Anchor Voice</span>
+                      <p className="text-[10px] text-slate-600 leading-tight">Anchor tone, structure & cadence without prompt clutter</p>
                     </div>
                   </div>
                 </div>
-              ) : data.visual_type === 'red_pen_pruner' ? (
-                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
-                    ✂️ The Red-Pen Pruning Protocol
-                  </span>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-85">
-                      <span className="text-[10px] font-black text-rose-800 uppercase block">
-                        ✕ Prune the noise
-                      </span>
-                      <p className="text-[10px] font-semibold text-rose-700 line-through mt-0.5">
-                        "18-page audit" + "meme speak"
-                      </p>
-                      <span className="text-[9px] font-bold text-rose-600 block mt-1">
-                        Strike out with Red Pen
-                      </span>
+              ) : data.visual_type === 'red_pen_card' ? (
+                /* Liam's Red Pen Contradiction Pruner Diagram */
+                <div className="bg-amber-50/80 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-sm">🖊️</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-800">
+                      Noise & Contradiction Pruner
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                    <div className="p-2 bg-white border border-black/20 rounded-xl">
+                      <span className="text-base block mb-0.5">✂️</span>
+                      <span className="text-[10px] font-black text-rose-900 block uppercase">1. Prune the Noise</span>
+                      <p className="text-[10px] text-slate-600 leading-tight">Cut contradictory instructions that confuse attention</p>
                     </div>
-
-                    <div className="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-2 text-center">
-                      <span className="text-[10px] font-black text-emerald-800 uppercase block">
-                        ✓ Keep it clean
-                      </span>
-                      <p className="text-[10px] font-semibold text-emerald-700 mt-0.5">
-                        "3-bullet Slack update"
-                      </p>
-                      <span className="text-[9px] font-bold text-emerald-600 block mt-1">
-                        Crystal-Clear Output
-                      </span>
+                    <div className="p-2 bg-white border border-black/20 rounded-xl">
+                      <span className="text-base block mb-0.5">✨</span>
+                      <span className="text-[10px] font-black text-emerald-900 block uppercase">2. Keep it Clean</span>
+                      <p className="text-[10px] text-slate-600 leading-tight">Every token should direct the model, not distract it</p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
-                    📝 The 4-Corner Prompt Planner
+                /* Sam's 4-Pillars Diagram */
+                <div className="bg-amber-50/80 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
+                    The 4 Prompt Pillars
                   </span>
-
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <div className="bg-rose-100 border border-rose-400 rounded-lg p-2 text-center">
-                      <span className="text-[10px] font-black text-rose-900 block uppercase">1. Persona</span>
-                      <p className="text-[11px] font-semibold text-rose-800">Who should the AI behave as?</p>
+                  <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                    <div className="p-2 bg-white border border-amber-300 rounded-xl">
+                      <span className="text-base block mb-0.5">🎭</span>
+                      <span className="text-[10px] font-black text-amber-900 block uppercase">1. Persona</span>
+                      <p className="text-[11px] font-semibold text-amber-800">Who is the AI?</p>
                     </div>
-                    <div className="bg-cyan-100 border border-cyan-400 rounded-lg p-2 text-center">
-                      <span className="text-[10px] font-black text-cyan-900 block uppercase">2. Audience</span>
-                      <p className="text-[11px] font-semibold text-cyan-800">Who is reading?</p>
+                    <div className="p-2 bg-white border border-sky-300 rounded-xl">
+                      <span className="text-base block mb-0.5">🎯</span>
+                      <span className="text-[10px] font-black text-sky-900 block uppercase">2. Objective</span>
+                      <p className="text-[11px] font-semibold text-sky-800">What is the goal?</p>
                     </div>
-                    <div className="bg-amber-100 border border-amber-400 rounded-lg p-2 text-center">
-                      <span className="text-[10px] font-black text-amber-900 block uppercase">3. Context</span>
-                      <p className="text-[11px] font-semibold text-amber-800">What is the goal?</p>
+                    <div className="p-2 bg-white border border-purple-300 rounded-xl">
+                      <span className="text-base block mb-0.5">📜</span>
+                      <span className="text-[10px] font-black text-purple-900 block uppercase">3. Rules</span>
+                      <p className="text-[11px] font-semibold text-purple-800">What are the constraints?</p>
                     </div>
-                    <div className="bg-lime-100 border border-lime-400 rounded-lg p-2 text-center">
+                    <div className="p-2 bg-white border border-lime-300 rounded-xl">
+                      <span className="text-base block mb-0.5">📋</span>
                       <span className="text-[10px] font-black text-lime-900 block uppercase">4. Format</span>
                       <p className="text-[11px] font-semibold text-lime-800">How should it look?</p>
                     </div>
@@ -183,6 +169,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             {/* Footer with Simplified "Back to Desk" CTA */}
             <div className="pt-2 flex gap-2 border-t border-black/10 shrink-0">
               <button
+                type="button"
                 onClick={() => replayCase(caseId)}
                 className="px-3.5 py-2.5 bg-white hover:bg-slate-100 border-2 border-black rounded-xl text-xs font-bold text-slate-800 shadow-comic-sm flex items-center gap-1 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer"
               >
@@ -191,6 +178,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   closeFieldGuide();
                   setActiveView('HOME');
@@ -202,7 +190,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
               </button>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

@@ -230,7 +230,7 @@ export const CardSwapper: React.FC<CardSwapperProps> = ({ data, caseId }) => {
       {/* FULL SUCCESS OVERLAY MODAL */}
       <AnimatePresence>
         {isSolved && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 select-none">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -296,7 +296,7 @@ export const CardSwapper: React.FC<CardSwapperProps> = ({ data, caseId }) => {
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
