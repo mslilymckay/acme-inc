@@ -120,12 +120,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     currentAssignments[slotId] = chipId;
     set({ slotAssignments: currentAssignments });
-
-    // Check solution if all slots filled
-    const allFilled = Object.values(currentAssignments).every(val => val !== null);
-    if (allFilled) {
-      get().checkSolution();
-    }
+    // Note: Do not auto-check solution here; keep Simulate Cortex Prompt button active
+    // so the user has time to think/absorb their choices before submitting.
   },
 
   removeChip: (slotId) => {
@@ -176,8 +172,12 @@ export const useGameStore = create<GameState>((set, get) => ({
         };
       }
 
+      // Unlock level coach badge ONLY when ALL cases in this level are completed
+      const levelCases = Object.values(updatedCases).filter(c => c.level === currentCase.level);
+      const allLevelCasesCompleted = levelCases.length > 0 && levelCases.every(c => c.status === 'completed');
+
       const newBadges = [...unlockedBadges];
-      if (!newBadges.includes(currentCase.badge_name)) {
+      if (allLevelCasesCompleted && !newBadges.includes(currentCase.badge_name)) {
         newBadges.push(currentCase.badge_name);
       }
 

@@ -7,7 +7,7 @@ export const TrophyCarousel: React.FC = () => {
 
   const badges = [
     { level: 1, name: "The Mental Modelist", icon: "🧠", color: "bg-purple-100 border-purple-500 text-purple-900" },
-    { level: 2, name: "The Master Briefer", icon: "🍱", color: "bg-amber-100 border-amber-500 text-amber-900" },
+    { level: 2, name: "The Master Briefer", icon: "📝", color: "bg-amber-100 border-amber-500 text-amber-900" },
     { level: 3, name: "The Thought Partner", icon: "🤝", color: "bg-cyan-100 border-cyan-500 text-cyan-900" },
     { level: 4, name: "The Skill Builder", icon: "🛠️", color: "bg-rose-100 border-rose-500 text-rose-900" },
     { level: 5, name: "The Workflow Maestro", icon: "⚡", color: "bg-emerald-100 border-emerald-500 text-emerald-900" }

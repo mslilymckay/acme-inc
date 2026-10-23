@@ -224,7 +224,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
         crime_scene_prompt: "Write an email about the new manager training.",
         warning_panel: {
           title: "Warning: Insufficient Context",
-          body: "The AI is guessing your intent. A sufficient brief requires four distinct cards on your Desk Calendar: Role (Who are you?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
+          body: "The AI is guessing your intent. A sufficient brief requires four distinct cards in your 4-Corner Prompt Planner: Role (Who are you?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
         }
       },
       workbench_tab: {
@@ -250,7 +250,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
           "slot_format": "chip_bullets"
         },
         success_resolution: {
-          heading: "Case Solved: Brief Assembled!",
+          heading: "Case Solved: Coach Notes Assembled!",
           message: "Sam's new brief gave Cortex the exact structure it needed.",
           character_reaction_emoji: "😏",
           character_reaction_quote: "Wait... it's under 150 words, has the registration link, and didn't mention 'synergy' once? I'm taking an early lunch.",
@@ -259,16 +259,16 @@ export const INITIAL_CASES: Record<string, CaseData> = {
       }
     },
     field_guide_data: {
-      title: "The 4-Card Desk Calendar",
-      visual_type: "desk_calendar",
-      summary: "AI can't read your mind. Every rock-solid prompt pins four essential cards to the desk calendar:",
+      title: "The 4-Corner Prompt Planner",
+      visual_type: "prompt_planner",
+      summary: "AI can't read your mind. Every rock-solid prompt pins four essential cards to the 4-Corner Prompt Planner:",
       content_bullets: [
-        "Role Card: Ground the AI in a specific persona and authority level.",
-        "Audience Card: Define exactly who will read or act on the response.",
-        "Context Card: Provide the core facts, constraints, and deadline.",
-        "Format Card: Specify length, bullet points, tone, and structural boundaries."
+        "Role: Ground the AI in a specific persona and authority level.",
+        "Audience: Define exactly who will read or act on the response.",
+        "Context: Provide the core facts, constraints, and deadline.",
+        "Format: Specify length, tone, structural boundaries, etc."
       ],
-      takeaway: "Order doesn't matter, but structure does! Lay out your four cards before you hit send."
+      takeaway: "Order doesn't matter, but structure does! Just make sure to include all the necessary pieces of the prompt before you hit Send."
     }
   },
   "2.2": {
@@ -276,7 +276,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
     title: "The Frankenstein Brief",
     level: 2,
     level_name: "Prompting",
-    badge_name: "The Prompting Pro",
+    badge_name: "The Master Briefer",
     badge_icon: "🧪",
     status: "locked",
     home_card: {
@@ -327,7 +327,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
     title: "The Tone-Deaf Draft",
     level: 2,
     level_name: "Prompting",
-    badge_name: "The Prompting Pro",
+    badge_name: "The Master Briefer",
     badge_icon: "🎙️",
     status: "locked",
     home_card: {

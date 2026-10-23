@@ -56,7 +56,7 @@ export const ModuleView: React.FC = () => {
   const tabs = [
     { id: 'observe', label: '1. Observe', icon: '🔍' },
     { id: 'inspect', label: '2. Inspect', icon: '🚨' },
-    { id: 'workbench', label: '3. Workbench', icon: '🍱' }
+    { id: 'workbench', label: '3. Workbench', icon: '📝' }
   ] as const;
 
   return (

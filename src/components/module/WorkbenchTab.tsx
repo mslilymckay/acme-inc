@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, RotateCcw, BookOpen, Sparkles, AlertCircle, X, Calendar as CalendarIcon, FileText } from 'lucide-react';
+import { CheckCircle2, RotateCcw, BookOpen, Sparkles, AlertCircle, X, FileText } from 'lucide-react';
 import { WorkbenchTabData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 import { CharacterAvatar } from '../common/CharacterAvatar';
@@ -22,7 +22,9 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
     replayCase
   } = useGameStore();
 
-  const [activeSlotId, setActiveSlotId] = useState<string | null>(null);
+  // Bidirectional interaction state: either quadrant or card can be selected first!
+  const [selectedQuadrantId, setSelectedQuadrantId] = useState<string | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Scramble available prompt cards so they are never in slot order
@@ -35,261 +37,309 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   const assignedChipIds = Object.values(slotAssignments).filter(Boolean) as string[];
   const unassignedChips = scrambledChips.filter(chip => !assignedChipIds.includes(chip.id));
 
-  // Find active slot object
-  const activeSlot = data.bento_slots.find(s => s.id === activeSlotId);
+  const getChipById = (id: string | null) => {
+    if (!id) return null;
+    return data.available_chips.find(c => c.id === id);
+  };
 
-  // Step 1: Tap slot -> Highlights slot and shifts focus to prompt cards tray
-  const handleSlotClick = (slotId: string) => {
+  const selectedQuadrant = data.bento_slots.find(s => s.id === selectedQuadrantId);
+  const selectedCard = data.available_chips.find(c => c.id === selectedCardId);
+
+  // --- BIDIRECTIONAL MATCHING LOGIC ---
+
+  // User taps a quadrant (landing zone)
+  const handleQuadrantClick = (slotId: string) => {
     setErrorMessage(null);
-    if (slotAssignments[slotId]) {
-      // If already assigned, remove it and set active for replacement
-      removeChip(slotId);
-      setActiveSlotId(slotId);
+
+    // If a card was already selected in the tray -> Assign it to this quadrant!
+    if (selectedCardId) {
+      assignChip(slotId, selectedCardId);
+      setSelectedCardId(null);
+      setSelectedQuadrantId(null);
       return;
     }
 
-    if (activeSlotId === slotId) {
-      setActiveSlotId(null);
+    // If this quadrant already has a card assigned
+    if (slotAssignments[slotId]) {
+      // If tapping the already selected quadrant -> deselect
+      if (selectedQuadrantId === slotId) {
+        setSelectedQuadrantId(null);
+      } else {
+        // Select it for replacement or unassignment
+        setSelectedQuadrantId(slotId);
+      }
+      return;
+    }
+
+    // Empty quadrant tapped: toggle selection
+    if (selectedQuadrantId === slotId) {
+      setSelectedQuadrantId(null);
     } else {
-      setActiveSlotId(slotId);
+      setSelectedQuadrantId(slotId);
     }
   };
 
-  // Step 2: Tap index card -> Adds card to the active slot
+  // Remove card from quadrant
+  const handleRemoveFromQuadrant = (e: React.MouseEvent, slotId: string) => {
+    e.stopPropagation();
+    removeChip(slotId);
+    setSelectedQuadrantId(slotId);
+    setSelectedCardId(null);
+  };
+
+  // User taps an index card in the tray
   const handleCardClick = (chipId: string) => {
     setErrorMessage(null);
 
-    // Target the actively selected quadrant slot if one is highlighted
-    if (activeSlotId) {
-      assignChip(activeSlotId, chipId);
-      
-      // Auto-advance to next empty slot if available
-      const nextEmptySlot = data.bento_slots.find(
-        s => s.id !== activeSlotId && !slotAssignments[s.id]
-      );
-      setActiveSlotId(nextEmptySlot ? nextEmptySlot.id : null);
+    // If a quadrant was already selected -> Assign this card to that quadrant!
+    if (selectedQuadrantId) {
+      assignChip(selectedQuadrantId, chipId);
+      setSelectedQuadrantId(null);
+      setSelectedCardId(null);
       return;
     }
 
-    // Fallback: place into the first empty quadrant
-    const firstEmpty = data.bento_slots.find(s => !slotAssignments[s.id]);
-    if (firstEmpty) {
-      assignChip(firstEmpty.id, chipId);
-      // Highlight the next empty slot
-      const subsequentEmpty = data.bento_slots.find(s => s.id !== firstEmpty.id && !slotAssignments[s.id]);
-      setActiveSlotId(subsequentEmpty ? subsequentEmpty.id : null);
+    // Toggle card selection
+    if (selectedCardId === chipId) {
+      setSelectedCardId(null);
+    } else {
+      setSelectedCardId(chipId);
     }
   };
 
   const handleSimulate = () => {
     const success = checkSolution();
     if (!success) {
-      setErrorMessage("Close! But Cortex is stumbling. Check if any distractor cards snuck onto your calendar!");
+      setErrorMessage("Close! But Cortex is still showing poor results. Try again by clearing the planner or replacing cards one-by-one.");
     } else {
       setErrorMessage(null);
     }
   };
 
-  const getChipById = (id: string | null) => {
-    if (!id) return null;
-    return data.available_chips.find(c => c.id === id);
-  };
-
-  // Visual themes for the 4 Desk Calendar quadrants
-  const calendarQuadrantThemes: Record<string, {
-    bg: string;
-    border: string;
-    badgeBg: string;
-    badgeText: string;
+  // Styling helper for quadrants (Coach Notes styled landing zones)
+  const quadrantThemes: Record<string, {
+    emptyBg: string;
+    emptyBorder: string;
+    filledBg: string;
+    filledBorder: string;
+    titleColor: string;
+    descColor: string;
     label: string;
+    category: string;
     sublabel: string;
-    accentDot: string;
   }> = {
     slot_role: {
-      bg: 'bg-rose-50/70',
-      border: 'border-rose-300',
-      badgeBg: 'bg-rose-100',
-      badgeText: 'text-rose-900',
+      emptyBg: 'bg-rose-50/70 hover:bg-rose-100/60',
+      emptyBorder: 'border-rose-300',
+      filledBg: 'bg-rose-100',
+      filledBorder: 'border-rose-400',
+      titleColor: 'text-rose-900',
+      descColor: 'text-rose-700',
       label: '1. Role',
-      sublabel: 'Who is speaking?',
-      accentDot: 'bg-rose-500'
+      category: 'ROLE',
+      sublabel: 'Who is the AI?'
     },
     slot_audience: {
-      bg: 'bg-cyan-50/70',
-      border: 'border-cyan-300',
-      badgeBg: 'bg-cyan-100',
-      badgeText: 'text-cyan-900',
+      emptyBg: 'bg-cyan-50/70 hover:bg-cyan-100/60',
+      emptyBorder: 'border-cyan-300',
+      filledBg: 'bg-cyan-100',
+      filledBorder: 'border-cyan-400',
+      titleColor: 'text-cyan-900',
+      descColor: 'text-cyan-700',
       label: '2. Audience',
-      sublabel: 'Who is reading?',
-      accentDot: 'bg-cyan-500'
+      category: 'AUDIENCE',
+      sublabel: 'Who is reading?'
     },
     slot_context: {
-      bg: 'bg-amber-50/70',
-      border: 'border-amber-300',
-      badgeBg: 'bg-amber-100',
-      badgeText: 'text-amber-900',
+      emptyBg: 'bg-amber-50/70 hover:bg-amber-100/60',
+      emptyBorder: 'border-amber-300',
+      filledBg: 'bg-amber-100',
+      filledBorder: 'border-amber-400',
+      titleColor: 'text-amber-900',
+      descColor: 'text-amber-700',
       label: '3. Context',
-      sublabel: 'What is the goal?',
-      accentDot: 'bg-amber-500'
+      category: 'CONTEXT',
+      sublabel: 'What are the facts?'
     },
     slot_format: {
-      bg: 'bg-lime-50/70',
-      border: 'border-lime-300',
-      badgeBg: 'bg-lime-100',
-      badgeText: 'text-lime-900',
+      emptyBg: 'bg-lime-50/70 hover:bg-lime-100/60',
+      emptyBorder: 'border-lime-300',
+      filledBg: 'bg-lime-100',
+      filledBorder: 'border-lime-400',
+      titleColor: 'text-lime-900',
+      descColor: 'text-lime-700',
       label: '4. Format',
-      sublabel: 'How is it structured?',
-      accentDot: 'bg-lime-500'
+      category: 'FORMAT',
+      sublabel: 'Length & structure'
     }
   };
 
-  // Card background styling based on category
-  const getCardStyle = (chipId: string) => {
+  // Card color styles in the tray (larger note cards, no bullets)
+  const getTrayCardStyle = (chipId: string) => {
     const chip = data.available_chips.find(c => c.id === chipId);
-    if (!chip) return 'bg-white border-black text-slate-900';
-    
-    switch (chip.category) {
-      case 'role':
-        return 'bg-rose-100/90 border-rose-400 text-rose-950 hover:bg-rose-200';
-      case 'audience':
-        return 'bg-cyan-100/90 border-cyan-400 text-cyan-950 hover:bg-cyan-200';
-      case 'context':
-        return 'bg-amber-100/90 border-amber-400 text-amber-950 hover:bg-amber-200';
-      case 'format':
-        return 'bg-lime-100/90 border-lime-400 text-lime-950 hover:bg-lime-200';
-      default:
-        // Distractors: plain index card look
-        return 'bg-stone-50 border-stone-300 text-stone-800 hover:bg-stone-100';
+    const isSelected = selectedCardId === chipId;
+
+    let baseColors = 'bg-stone-50 border-stone-300 text-stone-800 hover:bg-stone-100';
+    if (chip) {
+      switch (chip.category) {
+        case 'role':
+          baseColors = 'bg-rose-100/90 border-rose-400 text-rose-950 hover:bg-rose-200';
+          break;
+        case 'audience':
+          baseColors = 'bg-cyan-100/90 border-cyan-400 text-cyan-950 hover:bg-cyan-200';
+          break;
+        case 'context':
+          baseColors = 'bg-amber-100/90 border-amber-400 text-amber-950 hover:bg-amber-200';
+          break;
+        case 'format':
+          baseColors = 'bg-lime-100/90 border-lime-400 text-lime-950 hover:bg-lime-200';
+          break;
+      }
     }
+
+    if (isSelected) {
+      return `${baseColors} ring-3 ring-amber-400 border-black shadow-comic scale-105 z-10`;
+    }
+
+    return `${baseColors} shadow-comic-sm hover:translate-y-[-1px]`;
+  };
+
+  // Dynamic helper text based on interaction state
+  const getHelperText = () => {
+    if (selectedCardId && selectedCard) {
+      return `👉 Tap a quadrant above to place [${selectedCard.text}]`;
+    }
+    if (selectedQuadrantId && selectedQuadrant) {
+      return `👉 Tap a card below to assign to [${selectedQuadrant.label}]`;
+    }
+    return `Tap any card or quadrant to begin matching`;
   };
 
   return (
     <div className="flex flex-col h-full justify-between pb-2 overflow-hidden relative">
       <div className="space-y-2">
         {/* Instruction Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-extrabold text-xs text-slate-900 tracking-tight flex items-center gap-1.5">
-              <CalendarIcon className="w-3.5 h-3.5 text-slate-700" />
-              <span>Desk Calendar Planner</span>
-              <span className="text-[10px] text-slate-500 font-normal">
-                {activeSlotId ? `(Pick card for ${activeSlot?.label})` : `(Tap slot, then card)`}
-              </span>
+        <div className="flex items-center justify-between px-0.5">
+          <div className="min-w-0 pr-1">
+            <h3 className="font-extrabold text-xs text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
+              <FileText className="w-3.5 h-3.5 text-slate-700 shrink-0" />
+              <span>4-Corner Prompt Planner</span>
             </h3>
+            <p className="text-[10px] text-slate-500 font-semibold truncate">
+              {getHelperText()}
+            </p>
           </div>
 
           <button
             onClick={() => {
               clearAllSlots();
-              setActiveSlotId(null);
+              setSelectedQuadrantId(null);
+              setSelectedCardId(null);
               setErrorMessage(null);
             }}
-            className="px-2 py-0.5 bg-white hover:bg-slate-100 border border-black rounded-lg text-[10px] font-bold text-slate-700 shadow-comic-sm flex items-center gap-1 cursor-pointer"
+            className="px-2 py-0.5 bg-white hover:bg-slate-100 border border-black rounded-lg text-[10px] font-bold text-slate-700 shadow-comic-sm flex items-center gap-1 shrink-0 cursor-pointer"
           >
             <RotateCcw className="w-2.5 h-2.5" />
             <span>Clear</span>
           </button>
         </div>
 
-        {/* DESK CALENDAR PAD WITH BISECTING AXES */}
-        <div className="bg-[#faf8f5] border-3 border-black rounded-3xl shadow-comic overflow-hidden relative">
-          {/* Top Binding Strip with Brass Rivets */}
-          <div className="bg-stone-800 border-b-2 border-black px-3 py-1 flex items-center justify-between text-[9px] font-mono font-bold tracking-wider text-amber-300">
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 border border-black inline-block" />
-              <span>ACME DESK CALENDAR • 4-CORNER PLANNER</span>
+        {/* 4-CORNER PROMPT PLANNER (Clean Landing Zones without crosshair dividers) */}
+        <div className="bg-[#faf8f5] border-2 border-black rounded-2xl shadow-comic overflow-hidden relative">
+          {/* Top Binding Strip */}
+          <div className="bg-stone-800 border-b-2 border-black px-3.5 py-1.5 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-amber-300">
+            <div className="flex items-center gap-1.5 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 border border-black inline-block shrink-0" />
+              <span className="truncate">4-CORNER PROMPT PLANNER</span>
             </div>
-            <span className="text-stone-400 font-semibold">CASE #2.1</span>
+            <span className="text-stone-400 font-semibold shrink-0 ml-1">#2.1</span>
           </div>
 
-          {/* Blotter Surface with Dark Bisecting Axes */}
-          <div className="p-2 relative">
-            {/* Bisecting Axis Lines (Crosshair divider) */}
-            <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-stone-300 -translate-x-1/2 pointer-events-none z-0" />
-            <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-stone-300 -translate-y-1/2 pointer-events-none z-0" />
-
-            {/* 4 Quadrants Grid */}
-            <div className="grid grid-cols-2 gap-2 relative z-10">
+          {/* Planner Surface: 4 Landing Zones */}
+          <div className="p-2.5">
+            <div className="grid grid-cols-2 gap-2">
               {data.bento_slots.map((slot) => {
                 const assignedChip = getChipById(slotAssignments[slot.id]);
-                const theme = calendarQuadrantThemes[slot.id] || {
-                  bg: 'bg-white',
-                  border: 'border-stone-300',
-                  badgeBg: 'bg-stone-100',
-                  badgeText: 'text-stone-800',
+                const theme = quadrantThemes[slot.id] || {
+                  emptyBg: 'bg-white',
+                  emptyBorder: 'border-stone-300',
+                  filledBg: 'bg-white',
+                  filledBorder: 'border-black',
+                  titleColor: 'text-slate-900',
+                  descColor: 'text-slate-500',
                   label: slot.label,
-                  sublabel: slot.description || '',
-                  accentDot: 'bg-stone-400'
+                  category: slot.label.toUpperCase(),
+                  sublabel: slot.description || ''
                 };
-                const isActive = activeSlotId === slot.id;
+                const isQuadrantSelected = selectedQuadrantId === slot.id;
 
+                // When filled: The assigned index card fills the entire quadrant target area!
+                if (assignedChip) {
+                  return (
+                    <div
+                      key={slot.id}
+                      onClick={() => handleQuadrantClick(slot.id)}
+                      className={`p-2 rounded-xl border-2 border-black transition-all cursor-pointer min-h-[92px] flex flex-col justify-between relative shadow-comic-sm ${theme.filledBg} ${
+                        isQuadrantSelected
+                          ? 'ring-3 ring-amber-400 scale-[1.02]'
+                          : 'hover:scale-[1.01]'
+                      }`}
+                      style={{
+                        backgroundImage: 'repeating-linear-gradient(transparent, transparent 15px, rgba(0,0,0,0.04) 16px, rgba(0,0,0,0.04) 17px)'
+                      }}
+                    >
+                      {/* Top Category Tag & Remove Button */}
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-[9px] font-black uppercase tracking-wider text-black/60 font-mono">
+                          {theme.category}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => handleRemoveFromQuadrant(e, slot.id)}
+                          className="w-4 h-4 rounded-full bg-black/10 hover:bg-rose-500 hover:text-white text-slate-700 flex items-center justify-center transition-colors shrink-0"
+                          title="Remove card"
+                        >
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      </div>
+
+                      {/* Centered Large Bold Marker Text */}
+                      <div className="my-auto py-1 text-center">
+                        <span className="text-xs font-black text-slate-900 tracking-tight leading-snug block">
+                          {assignedChip.text}
+                        </span>
+                      </div>
+
+                      {/* Card footer indicator */}
+                      <div className="text-[8px] font-bold text-black/40 text-center uppercase tracking-wider">
+                        {isQuadrantSelected ? 'Tap card to swap' : 'Tap to replace'}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // When empty: Centered quadrant label with descriptor underneath (Coach Notes design, no buttons)
                 return (
                   <div
                     key={slot.id}
-                    onClick={() => handleSlotClick(slot.id)}
-                    className={`p-2 rounded-xl border-2 transition-all cursor-pointer min-h-[86px] flex flex-col justify-between relative shadow-xs ${
-                      isActive
-                        ? 'bg-amber-50/90 border-amber-500 ring-3 ring-amber-300 scale-[1.02] shadow-comic-sm'
-                        : assignedChip
-                        ? `${theme.bg} ${theme.border} border-solid shadow-comic-sm`
-                        : 'bg-white/90 border-dashed border-stone-300 hover:border-stone-400 hover:bg-stone-50/80'
+                    onClick={() => handleQuadrantClick(slot.id)}
+                    className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer min-h-[92px] flex flex-col items-center justify-center text-center ${
+                      isQuadrantSelected
+                        ? 'bg-amber-50 border-amber-500 ring-3 ring-amber-400 scale-[1.02] shadow-comic-sm'
+                        : `${theme.emptyBg} ${theme.emptyBorder} border-dashed hover:border-solid hover:scale-[1.01]`
                     }`}
                   >
-                    {/* Quadrant Header */}
-                    <div className="flex items-center justify-between pb-1">
-                      <div className="flex items-center gap-1">
-                        <span className={`w-1.5 h-1.5 rounded-full ${theme.accentDot}`} />
-                        <span className="text-[10px] font-black uppercase tracking-tight text-slate-800">
-                          {theme.label}
-                        </span>
-                      </div>
-                      
-                      {isActive ? (
-                        <span className="text-[8px] font-black uppercase bg-black text-amber-300 px-1 py-0.2 rounded animate-pulse">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="text-[8px] font-semibold text-slate-400 truncate max-w-[75px]">
-                          {theme.sublabel}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Docked Index Card or Empty Target Prompt */}
-                    <div className="mt-0.5">
-                      {assignedChip ? (
-                        <div className={`p-1.5 rounded-lg border-2 border-black shadow-comic-sm relative flex items-center justify-between ${getCardStyle(assignedChip.id)}`}>
-                          {/* Ruled index card styling */}
-                          <div className="flex items-center gap-1.5 min-w-0 pr-1">
-                            <FileText className="w-3 h-3 shrink-0 opacity-70" />
-                            <span className="text-xs font-black truncate leading-tight tracking-tight">
-                              {assignedChip.text}
-                            </span>
-                          </div>
-                          
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeChip(slot.id);
-                              setActiveSlotId(slot.id);
-                            }}
-                            className="w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 hover:bg-rose-600 transition-colors ml-1"
-                            title="Remove card"
-                          >
-                            <X className="w-2.5 h-2.5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className={`text-[10px] py-2 rounded-lg border text-center transition-colors ${
-                          isActive
-                            ? 'border-amber-400 text-amber-900 bg-amber-100/70 font-black'
-                            : 'border-dashed border-stone-200 text-stone-400 bg-stone-50/60 font-medium'
-                        }`}>
-                          {isActive ? "👉 Pick card below" : "+ Tap to assign"}
-                        </div>
-                      )}
-                    </div>
+                    <span className={`text-xs font-black uppercase tracking-tight block ${theme.titleColor}`}>
+                      {theme.label}
+                    </span>
+                    <p className={`text-[10px] font-semibold mt-0.5 leading-tight ${theme.descColor}`}>
+                      {theme.sublabel}
+                    </p>
+                    {isQuadrantSelected && (
+                      <span className="mt-1.5 text-[8px] font-black uppercase px-1.5 py-0.5 bg-black text-amber-300 rounded animate-pulse">
+                        Selected Target
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -305,55 +355,50 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
             className="p-2 bg-rose-50 border-2 border-rose-400 rounded-xl flex items-center gap-2 text-xs text-rose-900 font-bold"
           >
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{errorMessage}</span>
+            <span className="leading-tight">{errorMessage}</span>
           </motion.div>
         )}
 
-        {/* ASSORTMENT OF COLORED INDEX CARDS (TRAY) */}
+        {/* ASSORTMENT OF COLORED INDEX CARDS (TRAY: Larger note cards, no bullets) */}
         <div className={`bg-white border-2 rounded-2xl p-2.5 transition-all shadow-comic-sm ${
-          activeSlotId
+          selectedQuadrantId || selectedCardId
             ? 'border-amber-500 ring-2 ring-amber-300'
             : 'border-black'
         }`}>
-          <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center justify-between mb-2 px-0.5">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
               <FileText className="w-3 h-3 text-slate-500" />
-              {activeSlotId ? (
-                <span className="text-amber-800 font-extrabold">
-                  Select Card for [{activeSlot?.label}]:
-                </span>
-              ) : (
-                <span>Available Index Cards ({unassignedChips.length})</span>
-              )}
+              <span>Available Note Cards ({unassignedChips.length})</span>
             </span>
             <span className="text-[9px] font-semibold text-slate-400">
-              Tap card to place
+              Tap to match
             </span>
           </div>
 
-          {/* Scrambled 3x5 Index Cards */}
-          <div className="flex flex-wrap gap-1.5 min-h-[56px] items-center">
-            {unassignedChips.map((chip) => (
-              <button
-                key={chip.id}
-                onClick={() => handleCardClick(chip.id)}
-                className={`px-2.5 py-1.5 rounded-xl border-2 border-black text-xs font-black shadow-comic-sm active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer flex items-center gap-1.5 ${getCardStyle(chip.id)}`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" />
-                <span>{chip.text}</span>
-              </button>
-            ))}
+          {/* Larger Note Cards, No Bullets */}
+          <div className="flex flex-wrap gap-2 min-h-[58px] items-center">
+            {unassignedChips.map((chip) => {
+              return (
+                <button
+                  key={chip.id}
+                  onClick={() => handleCardClick(chip.id)}
+                  className={`px-3 py-1.5 rounded-xl border-2 border-black font-black text-xs transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5 ${getTrayCardStyle(chip.id)}`}
+                >
+                  <span>{chip.text}</span>
+                </button>
+              );
+            })}
 
             {unassignedChips.length === 0 && (
-              <span className="text-xs text-slate-400 italic py-1 mx-auto">
-                All 4 calendar quadrants filled! Ready to simulate.
+              <span className="text-xs text-slate-400 italic py-1 mx-auto font-medium">
+                All 4 quadrants filled! Review your cards and simulate below.
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* BOTTOM SIMULATE BAR */}
+      {/* BOTTOM SIMULATE BAR (Always active so user can think/absorb before submitting) */}
       <div className="pt-2">
         <button
           onClick={handleSimulate}
@@ -364,7 +409,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
         </button>
       </div>
 
-      {/* FULL SUCCESS OVERLAY MODAL (Focus on Pleased Sam, strictly no emoji badges) */}
+      {/* FULL SUCCESS OVERLAY MODAL */}
       <AnimatePresence>
         {isSolved && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
@@ -376,12 +421,12 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
             >
               {/* Header without emoji in corner */}
               <div className="flex items-center gap-2.5 pb-2 border-b border-black/10">
-                <div className="w-8 h-8 rounded-xl bg-emerald-400 border-2 border-black flex items-center justify-center shadow-comic-sm">
+                <div className="w-8 h-8 rounded-xl bg-emerald-400 border-2 border-black flex items-center justify-center shadow-comic-sm shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-slate-900" />
                 </div>
                 <div>
                   <h4 className="font-black text-sm text-slate-900 leading-tight">
-                    {data.success_resolution.heading}
+                    Case Solved: Coach Notes Assembled!
                   </h4>
                   <span className="text-[10px] font-bold text-emerald-800">
                     +100 Clarity XP Earned
@@ -389,7 +434,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                 </div>
               </div>
 
-              {/* Sam's Pleased Character Card (Earnestly satisfied with Bob Belcher's wide eyes & full smile) */}
+              {/* Sam's Character Card with Tap-to-Expand Quote */}
               <div className="bg-white border-2 border-black rounded-xl p-2.5 shadow-comic-sm">
                 <CharacterAvatar
                   name="Sam"
@@ -426,7 +471,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
                   className="w-full py-2 bg-white hover:bg-slate-100 border border-black rounded-xl font-bold text-xs text-slate-700 shadow-comic-sm flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Replay / Clear Calendar</span>
+                  <span>Replay / Clear Planner</span>
                 </button>
               </div>
             </motion.div>
