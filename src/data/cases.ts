@@ -470,15 +470,15 @@ export const INITIAL_CASES: Record<string, CaseData> = {
       }
     },
     field_guide_data: {
-      title: "Show, Don't Tell",
+      title: "The Example Injector",
       visual_type: "card_swapper",
       summary: "One gold-standard example is worth 50 abstract adjectives.",
       content_bullets: [
-        "Few-shot examples anchor style, cadence, and formatting immediately.",
-        "Abstract adjectives like 'inspiring' mean different things to different models.",
-        "Always pull reference samples from the actual author or publication you want to emulate."
+        "Few-shot examples anchor style, cadence, and formatting immediately (e.g. '2025 CEO Town Hall' vs. 'Silicon Valley Playbook').",
+        "Abstract tone adjectives lead to unpredictable guessing (e.g. 'visionary & bold' vs. literal infomercial buzzwords).",
+        "Always pull reference samples from the actual author or publication you want to emulate (e.g. 'Official Town Hall Transcript' vs. generic marketing templates)."
       ],
-      takeaway: "Don't tell the AI how to feel. Show the AI what great looks like."
+      takeaway: "Don't tell the AI how to feel. Show the AI what great looks like with a concrete past example."
     }
   },
 

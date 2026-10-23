@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, ArrowRight, Terminal, PenTool, Zap } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Terminal, PenTool, Zap, FolderOpen } from 'lucide-react';
 import { InspectTabData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 
@@ -41,20 +41,20 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data, caseId = '2.1' }) 
 
         {/* Diagnostic Warning Panel: Styled to match Case Archetype */}
         {caseId === '2.3' ? (
-          /* Case 2.3: Legal Pad & Manila Folder Swapper Preview */
-          <div className="bg-[#fef9c3] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
-            {/* Header */}
-            <div className="bg-stone-800 border-b-2 border-black px-3 py-1 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-amber-300">
+          /* Case 2.3: Manila Reference Folder Swapper Preview */
+          <div className="bg-[#fed7aa] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
+            {/* Manila Folder Tab Header */}
+            <div className="bg-[#fb923c] border-b-2 border-black px-3.5 py-1.5 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-slate-900">
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-400 border border-black inline-block" />
-                <span>CHLOE'S BRIEF & FOLDER PREVIEW</span>
+                <FolderOpen className="w-3.5 h-3.5 text-slate-900" />
+                <span>CHLOE'S REFERENCE FOLDER PREVIEW</span>
               </div>
-              <span className="text-stone-400">FEW-SHOT ANCHOR</span>
+              <span className="text-amber-950 font-black">FEW-SHOT ANCHOR</span>
             </div>
 
             <div className="p-3 space-y-2.5">
               <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm mt-0.5">
+                <div className="w-8 h-8 rounded-xl bg-[#fb923c] border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm mt-0.5">
                   <AlertTriangle className="w-4 h-4 text-slate-900" />
                 </div>
 
@@ -68,21 +68,30 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data, caseId = '2.1' }) 
                 </div>
               </div>
 
-              {/* Adjective vs File Comparison */}
-              <div className="p-2 bg-amber-100/70 border border-amber-300 rounded-xl space-y-1.5">
-                <div className="grid grid-cols-2 gap-1.5 text-center font-mono">
-                  <div className="bg-rose-100/80 border border-rose-300 rounded-lg p-1.5">
+              {/* Adjective vs File Comparison (Styled as File Sleeves) */}
+              <div className="p-2.5 bg-[#ffedd5] border-2 border-black/20 rounded-xl space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-slate-800">
+                  <span className="flex items-center gap-1">
+                    <FolderOpen className="w-3 h-3 text-orange-600" />
+                    The Few-Shot Injection Strategy:
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-center font-mono">
+                  <div className="bg-rose-50 border border-rose-300 rounded-lg p-2 shadow-xs">
                     <span className="text-[9px] font-black text-rose-900 uppercase block">❌ Current Ask</span>
-                    <span className="text-[10px] font-bold text-rose-950 block leading-tight">50 Subjective Adjectives</span>
+                    <span className="text-[10px] font-bold text-rose-950 block leading-tight mt-0.5">50 Vague Adjectives</span>
+                    <span className="text-[9px] text-rose-700 italic block mt-0.5">"visionary yet grounded"</span>
                   </div>
-                  <div className="bg-emerald-100/80 border border-emerald-400 rounded-lg p-1.5">
-                    <span className="text-[9px] font-black text-emerald-900 uppercase block">✓ Better Ask</span>
-                    <span className="text-[10px] font-bold text-emerald-950 block leading-tight">1 Past Gold-Standard File</span>
+                  <div className="bg-white border-2 border-purple-600 rounded-lg p-2 shadow-xs">
+                    <span className="text-[9px] font-black text-purple-900 uppercase block">✓ Better Ask</span>
+                    <span className="text-[10px] font-bold text-purple-950 block leading-tight mt-0.5">1 Reference File</span>
+                    <span className="text-[9px] text-purple-700 font-bold block mt-0.5">"2025 CEO Town Hall"</span>
                   </div>
                 </div>
 
                 <div className="text-[10px] font-bold text-purple-900 text-center italic">
-                  📁 Next step: Swap out vague adjectives for a real past CEO town hall speech!
+                  📁 Next step: Open Chloe's folder on the Workbench to inject a real reference file!
                 </div>
               </div>
             </div>

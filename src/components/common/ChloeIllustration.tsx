@@ -23,16 +23,16 @@ export const ChloeIllustration: React.FC<ChloeIllustrationProps> = ({
       className={`select-none shrink-0 ${className}`}
       aria-label={`Chloe from Executive Comms - Mood: ${mood}`}
     >
-      {/* HAIR (Back silhouette - blonde bob) */}
+      {/* HAIR BACK (Blonde bob silhouette) */}
       <path
-        d="M 32 66 C 26 42 34 18 58 14 C 76 10 96 14 108 26 C 118 38 116 66 110 74 C 104 54 98 24 78 20 C 58 16 42 28 32 66 Z"
+        d="M 32 68 C 26 44 32 18 56 14 C 74 10 96 14 108 26 C 118 38 116 68 110 76 C 104 84 98 86 98 76 C 98 50 94 24 74 20 C 56 16 42 30 38 76 C 36 84 32 80 32 68 Z"
         fill="#fef08a"
         stroke="#1e293b"
         strokeWidth="3.2"
         strokeLinejoin="round"
       />
 
-      {/* BODY / BLAZER (Tailored plum/purple blazer over crisp white blouse) */}
+      {/* BODY / BLAZER (Tailored plum/purple blazer over white blouse) */}
       <g id="body">
         {/* Torso */}
         <path
@@ -59,7 +59,7 @@ export const ChloeIllustration: React.FC<ChloeIllustrationProps> = ({
           strokeLinecap="round"
         />
 
-        {/* Little pearl necklace */}
+        {/* Pearl necklace */}
         <path
           d="M 64 108 A 6 3 0 0 0 76 108"
           stroke="#e2e8f0"
@@ -101,12 +101,12 @@ export const ChloeIllustration: React.FC<ChloeIllustrationProps> = ({
         strokeLinejoin="round"
       />
 
-      {/* FRONT HAIR (Side-swept blonde bangs) */}
+      {/* FRONT HAIR (Clean, smooth blonde bob with side-part - no comb-over lines) */}
       <path
-        d="M 42 42 C 46 28 62 24 78 28 C 92 32 98 44 98 52 C 96 40 84 34 72 34 C 58 34 48 38 42 42 Z"
+        d="M 40 48 C 40 32 52 20 70 20 C 88 20 100 32 100 48 C 98 38 90 32 78 30 C 64 28 50 34 40 48 Z"
         fill="#fde047"
         stroke="#1e293b"
-        strokeWidth="2.8"
+        strokeWidth="3"
         strokeLinejoin="round"
       />
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, RotateCcw, BookOpen, Check, Award } from 'lucide-react';
+import { X, RotateCcw, BookOpen, Check, Award, FolderOpen } from 'lucide-react';
 import { FieldGuideData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 
@@ -58,34 +58,40 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
               {/* Visual Diagram: Dynamic by visual_type */}
               {data.visual_type === 'card_swapper' || data.visual_type === 'few_shot_card' ? (
-                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
-                    📁 The Few-Shot Reference Injection Protocol
-                  </span>
+                <div className="bg-[#fed7aa] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
+                  <div className="bg-[#fb923c] border-b-2 border-black px-3 py-1 flex items-center justify-between text-[10px] font-mono font-black text-slate-900 uppercase">
+                    <span className="flex items-center gap-1.5">
+                      <FolderOpen className="w-3.5 h-3.5 text-slate-900" />
+                      <span>The Example Injector Protocol</span>
+                    </span>
+                    <span className="text-amber-950 text-[9px] font-bold">FEW-SHOT</span>
+                  </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-85">
-                      <span className="text-[10px] font-black text-rose-800 uppercase block">
-                        ✕ Abstract Adjectives
-                      </span>
-                      <p className="text-[10px] font-semibold text-rose-700 mt-0.5 line-through">
-                        "visionary yet grounded"
-                      </p>
-                      <span className="text-[9px] font-bold text-rose-600 block mt-1">
-                        AI Guesses Infomercial
-                      </span>
-                    </div>
+                  <div className="p-2.5">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-90">
+                        <span className="text-[10px] font-black text-rose-800 uppercase block">
+                          ✕ Abstract Adjectives
+                        </span>
+                        <p className="text-[10px] font-semibold text-rose-700 mt-0.5 line-through">
+                          "visionary yet grounded"
+                        </p>
+                        <span className="text-[9px] font-bold text-rose-600 block mt-1">
+                          AI Guesses Infomercial
+                        </span>
+                      </div>
 
-                    <div className="bg-purple-50 border-2 border-purple-400 rounded-xl p-2 text-center">
-                      <span className="text-[10px] font-black text-purple-900 uppercase block">
-                        ✓ 1 Real Past Example
-                      </span>
-                      <p className="text-[10px] font-semibold text-purple-800 mt-0.5">
-                        "2025 CEO Town Hall"
-                      </p>
-                      <span className="text-[9px] font-bold text-purple-700 block mt-1">
-                        Anchors Exact Voice
-                      </span>
+                      <div className="bg-white border-2 border-purple-600 rounded-xl p-2 text-center shadow-xs">
+                        <span className="text-[10px] font-black text-purple-900 uppercase block">
+                          ✓ 1 Past Reference File
+                        </span>
+                        <p className="text-[10px] font-bold text-purple-800 mt-0.5">
+                          "2025 CEO Town Hall"
+                        </p>
+                        <span className="text-[9px] font-bold text-purple-700 block mt-1">
+                          Anchors Exact Voice
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

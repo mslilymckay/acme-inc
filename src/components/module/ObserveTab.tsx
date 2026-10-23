@@ -35,17 +35,17 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
           <button
             key={hs.id}
             onClick={() => handleHotspotClick(hs)}
-            className={`inline-flex items-center px-1.5 py-0.5 rounded border transition-all cursor-pointer font-bold mx-0.5 ${
+            className={`inline text-left align-baseline px-1.5 py-0.5 rounded border transition-all cursor-pointer font-bold my-0.5 mr-1 break-words ${
               isFound
                 ? 'bg-amber-200 border-amber-500 text-amber-950 font-black'
                 : 'bg-rose-100 border-dashed border-rose-500 text-rose-900 animate-pulse hover:bg-rose-200 ring-2 ring-rose-400/40'
             }`}
           >
-            <span>{hs.text}</span>
+            <span className="text-left">{hs.text}</span>
             {isFound ? (
-              <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
+              <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline align-middle" />
             ) : (
-              <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
+              <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full inline-block align-middle">
                 +{hs.xp_value || 25}XP
               </span>
             )}
@@ -103,7 +103,7 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
           </div>
 
           {/* Interactive Flawed Memo Text */}
-          <div className="p-3 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl font-mono text-xs leading-relaxed text-slate-800">
+          <div className="p-3 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl font-mono text-xs leading-relaxed text-slate-800 text-left">
             {renderFlawedText()}
           </div>
         </div>
