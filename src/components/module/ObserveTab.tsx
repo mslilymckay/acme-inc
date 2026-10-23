@@ -17,6 +17,51 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
     discoverHotspot(caseId, hotspot);
   };
 
+  const renderFlawedText = () => {
+    const { text, hotspots } = data.flawed_output;
+    if (!hotspots || hotspots.length === 0) return <span>{text}</span>;
+
+    let remainingText = text;
+    const elements: React.ReactNode[] = [];
+
+    hotspots.forEach((hs, idx) => {
+      const parts = remainingText.split(hs.text);
+      if (parts.length > 1) {
+        if (parts[0]) {
+          elements.push(<span key={`text-${idx}`}>{parts[0]}</span>);
+        }
+        const isFound = caseDiscovered.includes(hs.id);
+        elements.push(
+          <button
+            key={hs.id}
+            onClick={() => handleHotspotClick(hs)}
+            className={`inline-flex items-center px-1.5 py-0.5 rounded border transition-all cursor-pointer font-bold mx-0.5 ${
+              isFound
+                ? 'bg-amber-200 border-amber-500 text-amber-950 font-black'
+                : 'bg-rose-100 border-dashed border-rose-500 text-rose-900 animate-pulse hover:bg-rose-200 ring-2 ring-rose-400/40'
+            }`}
+          >
+            <span>{hs.text}</span>
+            {isFound ? (
+              <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
+            ) : (
+              <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
+                +{hs.xp_value || 25}XP
+              </span>
+            )}
+          </button>
+        );
+        remainingText = parts.slice(1).join(hs.text);
+      }
+    });
+
+    if (remainingText) {
+      elements.push(<span key="text-end">{remainingText}</span>);
+    }
+
+    return elements;
+  };
+
   return (
     <div className="flex flex-col h-full justify-between pb-2 overflow-hidden">
       <div className="space-y-3">
@@ -59,51 +104,7 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
 
           {/* Interactive Flawed Memo Text */}
           <div className="p-3 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl font-mono text-xs leading-relaxed text-slate-800">
-            {/* Hotspot 1 */}
-            {data.flawed_output.hotspots[0] && (
-              <button
-                onClick={() => handleHotspotClick(data.flawed_output.hotspots[0])}
-                className={`inline-flex items-center px-1.5 py-0.5 rounded border transition-all cursor-pointer font-bold mr-1 ${
-                  caseDiscovered.includes(data.flawed_output.hotspots[0]?.id)
-                    ? 'bg-amber-200 border-amber-500 text-amber-950 font-black'
-                    : 'bg-rose-100 border-dashed border-rose-500 text-rose-900 animate-pulse hover:bg-rose-200 ring-2 ring-rose-400/40'
-                }`}
-              >
-                <span>{data.flawed_output.hotspots[0]?.text}</span>
-                {caseDiscovered.includes(data.flawed_output.hotspots[0]?.id) ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
-                ) : (
-                  <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
-                    +25XP
-                  </span>
-                )}
-              </button>
-            )}
-            
-            <span>{caseId === '2.2' ? ', the following ' : ', As we move forward into the new quarter, it is imperative that we optimize our leadership paradigms. Therefore, '}</span>
-
-            {/* Hotspot 2 */}
-            {data.flawed_output.hotspots[1] && (
-              <button
-                onClick={() => handleHotspotClick(data.flawed_output.hotspots[1])}
-                className={`inline-flex items-center px-1.5 py-0.5 rounded border transition-all cursor-pointer font-bold mx-1 ${
-                  caseDiscovered.includes(data.flawed_output.hotspots[1]?.id)
-                    ? 'bg-amber-200 border-amber-500 text-amber-950 font-black'
-                    : 'bg-rose-100 border-dashed border-rose-500 text-rose-900 animate-pulse hover:bg-rose-200 ring-2 ring-rose-400/40'
-                }`}
-              >
-                <span>{data.flawed_output.hotspots[1]?.text}</span>
-                {caseDiscovered.includes(data.flawed_output.hotspots[1]?.id) ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
-                ) : (
-                  <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
-                    +25XP
-                  </span>
-                )}
-              </button>
-            )}
-
-            <span>{caseId === '2.2' ? ' shall hereby delineate every database schema mutation. LOL so true bestie! Synergies will manifest.' : 'Synergizing our core competencies requires attendance. Thank you.'}</span>
+            {renderFlawedText()}
           </div>
         </div>
       </div>

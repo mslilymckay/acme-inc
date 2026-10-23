@@ -57,7 +57,39 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             {/* Compact Body Content (Fits 100% without scroll) */}
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
               {/* Visual Diagram: Dynamic by visual_type */}
-              {data.visual_type === 'red_pen_pruner' ? (
+              {data.visual_type === 'card_swapper' || data.visual_type === 'few_shot_card' ? (
+                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
+                    📁 The Few-Shot Reference Injection Protocol
+                  </span>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-85">
+                      <span className="text-[10px] font-black text-rose-800 uppercase block">
+                        ✕ Abstract Adjectives
+                      </span>
+                      <p className="text-[10px] font-semibold text-rose-700 mt-0.5 line-through">
+                        "visionary yet grounded"
+                      </p>
+                      <span className="text-[9px] font-bold text-rose-600 block mt-1">
+                        AI Guesses Infomercial
+                      </span>
+                    </div>
+
+                    <div className="bg-purple-50 border-2 border-purple-400 rounded-xl p-2 text-center">
+                      <span className="text-[10px] font-black text-purple-900 uppercase block">
+                        ✓ 1 Real Past Example
+                      </span>
+                      <p className="text-[10px] font-semibold text-purple-800 mt-0.5">
+                        "2025 CEO Town Hall"
+                      </p>
+                      <span className="text-[9px] font-bold text-purple-700 block mt-1">
+                        Anchors Exact Voice
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : data.visual_type === 'red_pen_pruner' ? (
                 <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
                   <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
                     ✂️ The Red-Pen Pruning Protocol

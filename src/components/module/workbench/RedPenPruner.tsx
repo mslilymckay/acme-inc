@@ -36,14 +36,14 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
     // Check if any valid rule was mistakenly pruned
     const wronglyPruned = prunedRuleIds.some((id) => validRules.includes(id));
     if (wronglyPruned) {
-      setErrorMessage("Careful! You struck out a valid product instruction. Only cross out the contradictory noise!");
+      setErrorMessage("Careful! You struck out a valid product instruction. Reset Liam's notepad or change your selections to proceed.");
       return;
     }
 
     // Check if all contradictions are pruned
     const allContradictionsPruned = contradictoryRules.every((id) => prunedRuleIds.includes(id));
     if (!allContradictionsPruned) {
-      setErrorMessage("Close! But there are still conflicting rules fighting each other. Look for instructions with opposing lengths or styles!");
+      setErrorMessage("Close! But there are still conflicting rules fighting each other. Reset Liam's notepad or change your selections to proceed.");
       return;
     }
 
@@ -97,12 +97,6 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
               <Trash2 className="w-3 h-3 text-rose-600" />
               <span>Contradictions Pruned: {prunedContradictionsCount}/{totalContradictions}</span>
             </span>
-
-            {isReadyToSimulate && (
-              <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-emerald-500 text-white rounded-full animate-pulse font-mono">
-                Ready to Simulate!
-              </span>
-            )}
           </div>
 
           {/* Lined Paper List of Rules (Flexibly distributed, no internal scroll) */}

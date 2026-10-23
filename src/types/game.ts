@@ -55,6 +55,16 @@ export interface PruningRule {
   sourceLabel?: string;
 }
 
+export interface ReferenceFileCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: string;
+  excerpt: string;
+  isCorrect: boolean;
+  feedbackNote?: string;
+}
+
 export interface SuccessResolution {
   heading: string;
   message: string;
@@ -69,6 +79,8 @@ export interface WorkbenchTabData {
   available_chips?: NounChip[];
   solution_mapping?: Record<string, string>; // slot_id -> chip_id
   pruning_rules?: PruningRule[];
+  reference_cards?: ReferenceFileCard[];
+  initial_adjectives?: string[];
   success_resolution: SuccessResolution;
 }
 

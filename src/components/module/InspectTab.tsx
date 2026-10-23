@@ -40,7 +40,54 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data, caseId = '2.1' }) 
         </div>
 
         {/* Diagnostic Warning Panel: Styled to match Case Archetype */}
-        {caseId === '2.2' ? (
+        {caseId === '2.3' ? (
+          /* Case 2.3: Legal Pad & Manila Folder Swapper Preview */
+          <div className="bg-[#fef9c3] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
+            {/* Header */}
+            <div className="bg-stone-800 border-b-2 border-black px-3 py-1 flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-amber-300">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-400 border border-black inline-block" />
+                <span>CHLOE'S BRIEF & FOLDER PREVIEW</span>
+              </div>
+              <span className="text-stone-400">FEW-SHOT ANCHOR</span>
+            </div>
+
+            <div className="p-3 space-y-2.5">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm mt-0.5">
+                  <AlertTriangle className="w-4 h-4 text-slate-900" />
+                </div>
+
+                <div>
+                  <h4 className="font-black text-sm text-slate-900 tracking-tight">
+                    {data.warning_panel.title}
+                  </h4>
+                  <p className="text-xs text-slate-800 mt-0.5 leading-snug font-medium">
+                    {data.warning_panel.body}
+                  </p>
+                </div>
+              </div>
+
+              {/* Adjective vs File Comparison */}
+              <div className="p-2 bg-amber-100/70 border border-amber-300 rounded-xl space-y-1.5">
+                <div className="grid grid-cols-2 gap-1.5 text-center font-mono">
+                  <div className="bg-rose-100/80 border border-rose-300 rounded-lg p-1.5">
+                    <span className="text-[9px] font-black text-rose-900 uppercase block">❌ Current Ask</span>
+                    <span className="text-[10px] font-bold text-rose-950 block leading-tight">50 Subjective Adjectives</span>
+                  </div>
+                  <div className="bg-emerald-100/80 border border-emerald-400 rounded-lg p-1.5">
+                    <span className="text-[9px] font-black text-emerald-900 uppercase block">✓ Better Ask</span>
+                    <span className="text-[10px] font-bold text-emerald-950 block leading-tight">1 Past Gold-Standard File</span>
+                  </div>
+                </div>
+
+                <div className="text-[10px] font-bold text-purple-900 text-center italic">
+                  📁 Next step: Swap out vague adjectives for a real past CEO town hall speech!
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : caseId === '2.2' ? (
           /* Case 2.2: Clipboard & Contradiction Preview */
           <div className="bg-[#fefce8] border-2 border-black rounded-2xl shadow-comic-sm overflow-hidden">
             {/* Metal Clip Header */}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SamIllustration, SamMood } from './SamIllustration';
 import { LiamIllustration } from './LiamIllustration';
+import { ChloeIllustration } from './ChloeIllustration';
 
 interface CharacterAvatarProps {
   name: string;
@@ -32,6 +33,9 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
     const lowerName = name.toLowerCase();
     if (lowerName.includes('liam')) {
       return <LiamIllustration mood={mood} size={sizePixels} />;
+    }
+    if (lowerName.includes('chloe')) {
+      return <ChloeIllustration mood={mood} size={sizePixels} />;
     }
     return <SamIllustration mood={mood} size={sizePixels} />;
   };

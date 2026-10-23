@@ -389,49 +389,96 @@ export const INITIAL_CASES: Record<string, CaseData> = {
     level: 2,
     level_name: "Prompting",
     badge_name: "The Master Briefer",
-    badge_icon: "🎙️",
+    badge_icon: "📁",
     status: "locked",
     home_card: {
-      hook: "Chloe used 50 adjectives to describe the CEO's voice. It still sounds like an infomercial.",
-      icon: "📢"
+      hook: "Chloe used 50 adjectives to describe the CEO's voice. Help her inject real examples.",
+      icon: "📁"
     },
     module_data: {
       observe_tab: {
         colleague_name: "Chloe",
         colleague_role: "Executive Comms",
         colleague_avatar: "👩🏼‍💼",
-        message: "I described the CEO's voice as 'visionary yet grounded,' and it sounds like a cheap infomercial!",
-        flawed_output: { text: "Are YOU ready to synergize the future?!", hotspots: [] }
+        message: "I spent all morning writing adjectives describing our CEO's tone: 'visionary, grounded, authentic, inspiring, bold yet approachable.' But Cortex drafted a speech that sounds like a late-night infomercial! The town hall is in two hours!",
+        flawed_output: {
+          text: "[ARE YOU READY TO REVOLUTIONIZE YOUR SYNERGY?! 🔥] Good morning champions! We are turbocharging unprecedented paradigm disruption across all verticals! [Act now because this quantum journey cannot wait!]",
+          hotspots: [
+            {
+              id: "hs_3_1",
+              text: "[ARE YOU READY TO REVOLUTIONIZE YOUR SYNERGY?! 🔥]",
+              clue_note: "Adjective Overload: Abstract tone words ('inspiring, bold') led Cortex to invent cheesy infomercial shouting.",
+              xp_value: 25
+            },
+            {
+              id: "hs_3_2",
+              text: "[Act now because this quantum journey cannot wait!]",
+              clue_note: "Style Drift: Without a real sample, the model default-guessed sales hype rather than genuine executive leadership.",
+              xp_value: 25
+            }
+          ]
+        }
       },
       inspect_tab: {
-        crime_scene_prompt: "Write in a warm, visionary, grounded, inspiring, authentic corporate tone.",
+        crime_scene_prompt: "Write a town hall speech opener in our CEO's voice. The tone must be visionary, warm, disruptive, grounded, authentic, approachable, bold, and inspiring.",
         warning_panel: {
           title: "Warning: Adjective Overload",
-          body: "Adjectives are subjective. Give the AI 1-2 concrete past examples instead."
+          body: "Adjectives like 'visionary yet grounded' are subjective—the AI has no idea what that means to your CEO. Giving Cortex one concrete past example anchors cadence, vocabulary, and tone instantly."
         }
       },
       workbench_tab: {
-        bento_slots: [],
-        available_chips: [],
-        solution_mapping: {},
+        archetype: "card_swapper",
+        initial_adjectives: [
+          "Visionary, bold & disruptive",
+          "Warm, authentic, yet authoritative",
+          "Grounded with executive gravitas"
+        ],
+        reference_cards: [
+          {
+            id: "ref_ceo_townhall",
+            title: "2025 CEO Town Hall: The Trust Roadmap",
+            subtitle: "Official All-Hands Transcript",
+            category: "Executive Memo",
+            excerpt: "Team, real progress isn't flashy announcements. It's doing the quiet, disciplined work every day.",
+            isCorrect: true
+          },
+          {
+            id: "ref_growth_playbook",
+            title: "Silicon Valley Viral Growth Playbook",
+            subtitle: "TechCrunch Excerpt",
+            category: "Growth Marketing",
+            excerpt: "Growth is war! Leverage every funnel metric to aggressively dominate market share!",
+            isCorrect: false,
+            feedbackNote: "This is aggressive sales hype, not your CEO's measured leadership style."
+          },
+          {
+            id: "ref_buzzword_glossary",
+            title: "100 Power Adjectives for Modern Leaders",
+            subtitle: "HR Brainstorming Doc",
+            category: "Buzzword List",
+            excerpt: "Synergistic, holistic, proactive, game-changing, paradigm-shifting, hyper-scaled...",
+            isCorrect: false,
+            feedbackNote: "More adjectives won't solve adjective overload! Pick a concrete past writing sample."
+          }
+        ],
         success_resolution: {
-          heading: "Few-Shot Voice Locked!",
+          heading: "Case Solved: Voice Locked In!",
           message: "A single past CEO letter anchored the tone perfectly.",
-          character_reaction_emoji: "✨",
-          character_reaction_quote: "Now that actually sounds like our CEO.",
-          resolved_prompt_template: "Match the tone of this past quarterly memo: [Attached]."
+          character_reaction_quote: "One past memo did what 50 adjectives couldn't. It captured her quiet confidence, dropped the cheesy buzzwords, and actually sounds like a real person. I'm ready for the town hall!",
+          resolved_prompt_template: "Match the cadence, tone, and sentence structure of this attached past CEO town hall opener: [2025 CEO Town Hall: The Trust Roadmap]."
         }
       }
     },
     field_guide_data: {
       title: "Show, Don't Tell",
-      visual_type: "few_shot_card",
+      visual_type: "card_swapper",
       summary: "One gold-standard example is worth 50 abstract adjectives.",
       content_bullets: [
         "Few-shot examples anchor style, cadence, and formatting immediately.",
-        "Provide 1-2 concrete samples of past writing you love."
+        "Abstract adjectives like 'inspiring' mean different things to different models.",
+        "Always pull reference samples from the actual author or publication you want to emulate."
       ],
-      takeaway: "Show the AI what good looks like."
+      takeaway: "Don't tell the AI how to feel. Show the AI what great looks like."
     }
   },
 

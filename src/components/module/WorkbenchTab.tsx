@@ -5,6 +5,7 @@ import { WorkbenchTabData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 import { CharacterAvatar } from '../common/CharacterAvatar';
 import { RedPenPruner } from './workbench/RedPenPruner';
+import { CardSwapper } from './workbench/CardSwapper';
 
 interface WorkbenchTabProps {
   data: WorkbenchTabData;
@@ -25,6 +26,9 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   // Delegate to specific archetype workbenches
   if (data.archetype === 'red_pen_pruner' || caseId === '2.2') {
     return <RedPenPruner data={data} caseId={caseId} />;
+  }
+  if (data.archetype === 'card_swapper' || caseId === '2.3') {
+    return <CardSwapper data={data} caseId={caseId} />;
   }
 
   const {
