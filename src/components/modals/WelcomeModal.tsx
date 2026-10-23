@@ -4,7 +4,7 @@ import { Sparkles, ArrowRight, BookOpen, Layers, CheckCircle2, X } from 'lucide-
 import { useGameStore } from '../../store/useGameStore';
 
 export const WelcomeModal: React.FC = () => {
-  const { showWelcomeModal, closeWelcomeModal, setCurrentCase } = useGameStore();
+  const { showWelcomeModal, closeWelcomeModal, setCurrentCase, resetEntireDemo } = useGameStore();
 
   if (!showWelcomeModal) return null;
 
@@ -41,7 +41,7 @@ export const WelcomeModal: React.FC = () => {
           </div>
 
           <h2 className="text-lg font-black text-slate-900 leading-tight">
-            Signal & Noise: The AI Coach
+            Acme Flux AI Coach
           </h2>
           <p className="text-xs font-semibold text-slate-600 mt-1 leading-snug">
             Interactive AI Enablement & Fluency Simulation
@@ -114,6 +114,18 @@ export const WelcomeModal: React.FC = () => {
               className="w-full py-2 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl font-bold text-xs text-slate-600 transition-colors cursor-pointer"
             >
               Explore the Acme Flux Desk First
+            </button>
+
+            <button
+              onClick={() => {
+                if (window.confirm("Reset all prototype progress to factory start?")) {
+                  resetEntireDemo();
+                  closeWelcomeModal();
+                }
+              }}
+              className="text-[11px] font-bold text-slate-400 hover:text-rose-600 underline text-center cursor-pointer transition-colors pt-0.5"
+            >
+              Reset Prototype Data
             </button>
           </div>
         </motion.div>

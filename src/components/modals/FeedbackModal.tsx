@@ -6,7 +6,7 @@ import { useGameStore } from '../../store/useGameStore';
 export const FeedbackModal: React.FC = () => {
   const { showFeedbackModal, closeFeedbackModal } = useGameStore();
 
-  const [favoriteCase, setFavoriteCase] = useState<string>('2.1');
+  const [favoriteCase, setFavoriteCase] = useState<string | null>(null);
   const [feedbackNotes, setFeedbackNotes] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -20,25 +20,29 @@ export const FeedbackModal: React.FC = () => {
 
   const formattedFeedbackBody = `Hi Lily,
 
-Here is my feedback on the Signal & Noise POC prototype:
+Here is my feedback on the Acme Flux AI Coach prototype:
 
-- Favorite Case/Interaction: ${casesList.find(c => c.id === favoriteCase)?.label || favoriteCase}
+- Favorite Case/Interaction: ${favoriteCase ? (casesList.find(c => c.id === favoriteCase)?.label || favoriteCase) : '(None selected)'}
 - Feedback / Impressions:
 ${feedbackNotes.trim() ? feedbackNotes : '(No notes entered)'}
 
 Tested on: ${navigator.userAgent}
 `;
 
-  const handleEmail = () => {
-    const subject = encodeURIComponent('Signal & Noise Prototype Feedback');
-    const body = encodeURIComponent(formattedFeedbackBody);
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  };
+  const mailtoRecipient = 'lily.morin423@gmail.com';
+  const mailtoSubject = encodeURIComponent('Acme Flux AI Coach Feedback');
+  const mailtoBody = encodeURIComponent(formattedFeedbackBody);
+  const mailtoUrl = `mailto:${mailtoRecipient}?subject=${mailtoSubject}&body=${mailtoBody}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(formattedFeedbackBody);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleEmailClick = () => {
+    // Copy as a fallback so user has it immediately
+    handleCopy();
   };
 
   return (
@@ -119,13 +123,14 @@ Tested on: ${navigator.userAgent}
           {/* Action CTAs */}
           <div className="pt-2 border-t border-black/10 flex flex-col gap-2 shrink-0">
             <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={handleEmail}
-                className="py-2.5 px-3 bg-acme-yellow hover:bg-yellow-300 border-2 border-black rounded-xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
+              <a
+                href={mailtoUrl}
+                onClick={handleEmailClick}
+                className="py-2.5 px-3 bg-acme-yellow hover:bg-yellow-300 border-2 border-black rounded-xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer text-center no-underline"
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>Send via Email</span>
-              </button>
+              </a>
 
               <button
                 onClick={handleCopy}

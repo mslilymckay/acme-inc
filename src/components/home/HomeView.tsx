@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, ArrowRight, BookOpen, Info, MessageSquareHeart } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 import { TrophyCarousel } from './TrophyCarousel';
@@ -19,6 +19,7 @@ export const HomeView: React.FC = () => {
     resetEntireDemo
   } = useGameStore();
   const [selectedLevel, setSelectedLevel] = useState<number | 'all'>('all');
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const casesArray = Object.values(cases);
   const activeCase = casesArray.find(c => c.status === 'active');
@@ -37,6 +38,26 @@ export const HomeView: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isL2Completed, hasSeenL2Celebration, openL2CelebrationModal]);
+
+  const handleReset = () => {
+    if (window.confirm("Reset all prototype progress to factory start?")) {
+      resetEntireDemo();
+      scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleFabClick = () => {
+    if (!activeCase) return;
+    if (activeCase.id === '3.1' || activeCase.level >= 3) {
+      openPrototypeWipModal(
+        "Level 3 Preview: The Hype Machine Trap",
+        "Marcus is waiting for you in Level 3 (Collaboration)! Levels 3–5 are currently under development for the full release. Thank you for testing Level 2: Prompt Building!",
+        "LEVEL 3 PREVIEW"
+      );
+      return;
+    }
+    setCurrentCase(activeCase.id);
+  };
 
   const levels = [
     { level: 1, name: "Models", badge: "🧠" },
@@ -60,10 +81,10 @@ export const HomeView: React.FC = () => {
           </div>
           <div>
             <span className="text-[9px] font-black uppercase tracking-wider text-slate-700 block">
-              Acme Flux Workspace
+              Your Desk
             </span>
             <h1 className="text-xs font-black text-slate-900 leading-tight">
-              Signal & Noise: AI Coach
+              Acme Flux AI Coach
             </h1>
           </div>
         </div>
@@ -99,7 +120,7 @@ export const HomeView: React.FC = () => {
       </header>
 
       {/* Scrollable Matrix Content */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3 pb-24">
         {/* Top Trophy Shelf */}
         <TrophyCarousel />
 
@@ -201,14 +222,10 @@ export const HomeView: React.FC = () => {
 
         {/* Prototype Reviewer Footer */}
         <div className="pt-4 pb-2 text-center text-[10px] text-slate-500 font-mono flex items-center justify-center gap-2">
-          <span>Signal & Noise POC · Level 2</span>
+          <span>Acme Flux AI Coach · Level 2</span>
           <span>•</span>
           <button
-            onClick={() => {
-              if (window.confirm("Reset all prototype progress to factory start?")) {
-                resetEntireDemo();
-              }
-            }}
+            onClick={handleReset}
             className="underline hover:text-rose-600 transition-colors cursor-pointer"
           >
             Reset Prototype Data
@@ -220,7 +237,7 @@ export const HomeView: React.FC = () => {
       {activeCase && (
         <div className="absolute bottom-3 left-3 right-3 z-30">
           <button
-            onClick={() => setCurrentCase(activeCase.id)}
+            onClick={handleFabClick}
             className="w-full py-3.5 px-4 bg-acme-yellow hover:bg-yellow-300 border-3 border-black rounded-2xl font-black text-xs text-slate-900 shadow-comic flex items-center justify-between active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer ring-2 ring-black/10"
           >
             <div className="flex items-center gap-2 truncate">

@@ -153,7 +153,7 @@ export const ModuleView: React.FC = () => {
       </nav>
 
       {/* Main Tab Content View */}
-      <main className="flex-1 p-3 overflow-hidden">
+      <main className="flex-1 px-3 py-2 overflow-y-auto overflow-x-hidden">
         {currentTab === 'observe' && (
           <ObserveTab
             data={caseData.module_data.observe_tab}

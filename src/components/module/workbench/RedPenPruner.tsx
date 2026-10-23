@@ -57,7 +57,7 @@ export const RedPenPruner: React.FC<RedPenPrunerProps> = ({ data, caseId }) => {
   const isReadyToSimulate = prunedContradictionsCount === totalContradictions && prunedRuleIds.length === totalContradictions;
 
   return (
-    <div className="flex flex-col h-full justify-between pb-1 overflow-y-auto relative select-none">
+    <div className="flex flex-col min-h-full justify-between pb-2 pr-0.5 select-none relative">
       <div className="flex-1 flex flex-col min-h-0 space-y-2">
         {/* Instruction Header */}
         <div className="flex items-center justify-between px-0.5 shrink-0">

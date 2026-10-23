@@ -63,7 +63,7 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
   };
 
   return (
-    <div className="flex flex-col h-full justify-between pb-2 overflow-hidden">
+    <div className="flex flex-col min-h-full justify-between pb-2 pr-0.5">
       <div className="space-y-3">
         {/* Colleague Character Card: Left-stacked portrait/name/role + large quote area on right */}
         <div className="bg-white border-2 border-black rounded-2xl p-3 shadow-comic-sm">

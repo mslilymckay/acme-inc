@@ -25,17 +25,34 @@ export const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
     }
 
     if (isActive) {
+      if (caseData.level >= 3) {
+        openPrototypeWipModal(
+          `Level 3 Preview: ${caseData.title}`,
+          "Marcus is waiting for you in Level 3 (Collaboration)! Levels 3–5 are currently under development for the full release. Thank you for testing Level 2: Prompt Building!",
+          "LEVEL 3 PREVIEW"
+        );
+        return;
+      }
       // "Open" state: click to open module
       setCurrentCase(caseData.id);
     } else if (isCompleted) {
       // "Closed" state: click to open Coach Notes
       openFieldGuide(caseData.id);
     } else if (isLocked) {
-      openPrototypeWipModal(
-        `Case ${caseData.id}: ${caseData.title}`,
-        "This is a partial prototype. Levels 3, 4, and 5 (Collaboration, Skills, and Tasks & Agents) are currently under development. Experience Level 2: Prompt Building to test the core mechanics!",
-        "FUTURE CASE"
-      );
+      if (caseData.level === 2) {
+        const prevCaseName = caseData.id === '2.3' ? '2.2 (Liam)' : '2.1 (Sam)';
+        openPrototypeWipModal(
+          `Case ${caseData.id}: Locked`,
+          `Complete Case ${prevCaseName} first to unlock this investigation!`,
+          "CASE LOCKED"
+        );
+      } else {
+        openPrototypeWipModal(
+          `Case ${caseData.id}: ${caseData.title}`,
+          "This is a partial prototype. Levels 3, 4, and 5 (Collaboration, Skills, and Tasks & Agents) are currently under development. Experience Level 2: Prompt Building to test the core mechanics!",
+          "FUTURE CASE"
+        );
+      }
     }
   };
 

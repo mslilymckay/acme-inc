@@ -282,7 +282,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   const activeDraggedChip = dragState?.isDragging ? getChipById(dragState.chipId) : null;
 
   return (
-    <div className="flex flex-col h-full justify-between pb-2 overflow-hidden relative select-none">
+    <div className="flex flex-col min-h-full justify-between pb-2 pr-0.5 select-none relative">
       <div className="space-y-2">
         {/* Instruction Header */}
         <div className="flex items-center justify-between px-0.5">

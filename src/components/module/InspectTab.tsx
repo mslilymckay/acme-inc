@@ -12,7 +12,7 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data, caseId = '2.1' }) 
   const { setCurrentTab } = useGameStore();
 
   return (
-    <div className="flex flex-col h-full justify-between pb-2 overflow-hidden">
+    <div className="flex flex-col min-h-full justify-between pb-2 pr-0.5">
       <div className="space-y-3">
         {/* Crime Scene Prompt Box */}
         <div className="bg-white border-2 border-black rounded-2xl overflow-hidden shadow-comic-sm">

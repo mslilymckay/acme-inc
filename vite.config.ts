@@ -13,9 +13,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Signal & Noise: The AI Enablement Coach',
-        short_name: 'Signal & Noise',
-        description: 'Gamified AI Enablement & Coaching Simulation',
+        name: 'Acme Flux AI Coach',
+        short_name: 'Acme Flux',
+        description: 'Acme Flux AI Coach - Gamified AI Enablement & Coaching Simulation',
         theme_color: '#fde047',
         background_color: '#0f172a',
         display: 'standalone',

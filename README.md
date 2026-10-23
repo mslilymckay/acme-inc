@@ -1,32 +1,14 @@
-# React + TypeScript + Vite
+# Acme Flux AI Coach
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+An interactive, gamified simulation for AI enablement and prompt mastery.
 
-Currently, two official plugins are available:
+## Overview
+Acme Flux AI Coach puts you in the shoes of an AI Enablement Coach at Acme Flux. Guide your colleagues (Sam in L&D, Liam in Product, Chloe in Executive Comms) through structural prompt assembly, contradiction pruning, and few-shot reference injection.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Level 2: Prompt Building (Playable POC)
+- **Case 2.1 (Sam - L&D Lead)**: *The Mind-Reader Fallacy* — 4-Corner Prompt Planner (Touch & Drag-and-Drop)
+- **Case 2.2 (Liam - Product Manager)**: *The Franken-Prompt* — The Prompt Pruner (Interactive Red Pen)
+- **Case 2.3 (Chloe - Executive Comms)**: *The Tone-Deaf Draft* — The Example Injector (Few-Shot Reference Folder)
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Tech Stack
+- React 18, TypeScript, Vite 5, Tailwind CSS, Zustand, Framer Motion
