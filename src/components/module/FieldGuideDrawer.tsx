@@ -58,39 +58,39 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
               {/* Visual 4-Corner Prompt Planner Diagram */}
               <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 block mb-1.5 text-center">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
                   📝 The 4-Corner Prompt Planner
                 </span>
 
                 <div className="grid grid-cols-2 gap-1.5">
                   <div className="bg-rose-100 border border-rose-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-rose-900 block uppercase">1. Role</span>
-                    <p className="text-[10px] font-medium text-rose-800">Who is the AI?</p>
+                    <span className="text-[10px] font-black text-rose-900 block uppercase">1. Persona</span>
+                    <p className="text-[11px] font-semibold text-rose-800">Who should the AI behave as?</p>
                   </div>
                   <div className="bg-cyan-100 border border-cyan-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-cyan-900 block uppercase">2. Audience</span>
-                    <p className="text-[10px] font-medium text-cyan-800">Who is reading?</p>
+                    <span className="text-[10px] font-black text-cyan-900 block uppercase">2. Audience</span>
+                    <p className="text-[11px] font-semibold text-cyan-800">Who is reading?</p>
                   </div>
                   <div className="bg-amber-100 border border-amber-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-amber-900 block uppercase">3. Context</span>
-                    <p className="text-[10px] font-medium text-amber-800">What are the facts?</p>
+                    <span className="text-[10px] font-black text-amber-900 block uppercase">3. Context</span>
+                    <p className="text-[11px] font-semibold text-amber-800">What is the goal?</p>
                   </div>
                   <div className="bg-lime-100 border border-lime-400 rounded-lg p-2 text-center">
-                    <span className="text-[9px] font-black text-lime-900 block uppercase">4. Format</span>
-                    <p className="text-[10px] font-medium text-lime-800">Length & structure</p>
+                    <span className="text-[10px] font-black text-lime-900 block uppercase">4. Format</span>
+                    <p className="text-[11px] font-semibold text-lime-800">How should it look?</p>
                   </div>
                 </div>
               </div>
 
               {/* Key Principles Bullets */}
               <div className="bg-slate-50 border-2 border-black rounded-2xl p-2.5 space-y-1.5 shadow-comic-sm">
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-800 block">
+                <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block">
                   Core Coaching Principles:
                 </span>
-                <ul className="space-y-1 text-[11px] text-slate-700">
+                <ul className="space-y-1.5 text-xs text-slate-800 font-medium">
                   {data.content_bullets.map((bullet, idx) => (
                     <li key={idx} className="flex items-start gap-1.5 leading-snug">
-                      <Check className="w-3 h-3 text-emerald-600 shrink-0 mt-0.5" />
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                       <span>{bullet}</span>
                     </li>
                   ))}
@@ -99,10 +99,10 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
 
               {/* Pro Tip Card */}
               <div className="p-2.5 bg-acme-yellow/40 border-2 border-black rounded-xl text-center">
-                <span className="text-[10px] font-black text-slate-900 uppercase block tracking-wider">
+                <span className="text-[11px] font-black text-slate-900 uppercase block tracking-wider">
                   💡 Pro Tip
                 </span>
-                <p className="text-xs font-semibold text-slate-800 italic mt-0.5">
+                <p className="text-xs font-semibold text-slate-800 italic mt-0.5 leading-snug">
                   "{data.takeaway}"
                 </p>
               </div>

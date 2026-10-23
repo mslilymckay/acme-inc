@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight, MessageSquareQuote, Search, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ArrowRight, Search, CheckCircle2 } from 'lucide-react';
 import { ObserveTabData, Hotspot } from '../../types/game';
 import { CharacterAvatar } from '../common/CharacterAvatar';
 import { useGameStore } from '../../store/useGameStore';
@@ -20,7 +20,7 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
   return (
     <div className="flex flex-col h-full justify-between pb-2 overflow-hidden">
       <div className="space-y-3">
-        {/* Colleague Chat Dialogue with Sleepy Sam */}
+        {/* Colleague Character Card: Left-stacked portrait/name/role + large quote area on right */}
         <div className="bg-white border-2 border-black rounded-2xl p-3 shadow-comic-sm">
           <CharacterAvatar
             name={data.colleague_name}
@@ -28,35 +28,31 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
             avatar={data.colleague_avatar}
             mood="stressed"
             size="md"
+            quote={data.message}
           />
-
-          <div className="mt-2.5 relative bg-amber-50 border border-black/20 rounded-xl p-2.5 text-xs text-slate-800 leading-snug">
-            <MessageSquareQuote className="w-3.5 h-3.5 text-amber-600 absolute -top-1.5 -left-1 bg-white rounded-full border border-black/20 p-0.5" />
-            <p className="italic text-[11px]">"{data.message}"</p>
-          </div>
         </div>
 
         {/* Flawed AI Output Box */}
         <div className="bg-white border-2 border-black rounded-2xl p-3 shadow-comic-sm">
-          <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <div className="w-5 h-5 rounded-md bg-rose-100 border border-black flex items-center justify-center">
-                <Search className="w-3 h-3 text-rose-700" />
+                <Search className="w-3.5 h-3.5 text-rose-700" />
               </div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-800">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-800">
                 Flawed AI Memo
               </span>
             </div>
 
             {/* Clue counter badge */}
-            <span className="text-[10px] font-black px-2 py-0.5 bg-slate-100 border border-black/30 rounded-full text-slate-700 flex items-center gap-1 font-mono">
+            <span className="text-[11px] font-black px-2 py-0.5 bg-slate-100 border border-black/30 rounded-full text-slate-700 flex items-center gap-1 font-mono">
               <Sparkles className="w-3 h-3 text-amber-500 fill-amber-400" />
               Clues: {caseDiscovered.length}/{data.flawed_output.hotspots.length}
             </span>
           </div>
 
-          {/* Interactive Flawed Memo Text */}
-          <div className="p-2.5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl font-mono text-[11px] leading-relaxed text-slate-800">
+          {/* Interactive Flawed Memo Text (Larger copy for readability) */}
+          <div className="p-3 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl font-mono text-xs leading-relaxed text-slate-800">
             {/* Hotspot 1: [Dear Employee] */}
             <button
               onClick={() => handleHotspotClick(data.flawed_output.hotspots[0])}
@@ -68,9 +64,9 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
             >
               <span>{data.flawed_output.hotspots[0]?.text || "[Dear Employee]"}</span>
               {caseDiscovered.includes(data.flawed_output.hotspots[0]?.id) ? (
-                <CheckCircle2 className="w-3 h-3 ml-1 text-emerald-700 inline" />
+                <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
               ) : (
-                <span className="ml-1 text-[8px] font-black px-1 bg-rose-600 text-white rounded-full">
+                <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
                   +25XP
                 </span>
               )}
@@ -89,9 +85,9 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
             >
               <span>{data.flawed_output.hotspots[1]?.text || "training will occur."}</span>
               {caseDiscovered.includes(data.flawed_output.hotspots[1]?.id) ? (
-                <CheckCircle2 className="w-3 h-3 ml-1 text-emerald-700 inline" />
+                <CheckCircle2 className="w-3.5 h-3.5 ml-1 text-emerald-700 inline" />
               ) : (
-                <span className="ml-1 text-[8px] font-black px-1 bg-rose-600 text-white rounded-full">
+                <span className="ml-1 text-[9px] font-black px-1 bg-rose-600 text-white rounded-full">
                   +25XP
                 </span>
               )}
@@ -100,7 +96,7 @@ export const ObserveTab: React.FC<ObserveTabProps> = ({ data, caseId }) => {
             <span>Synergizing our core competencies requires attendance. Thank you.</span>
           </div>
 
-          <div className="flex items-center justify-between mt-2 text-[10px] text-slate-500 font-medium">
+          <div className="flex items-center justify-between mt-2 text-[11px] text-slate-600 font-medium">
             <span>💡 Tap highlighted phrases to inspect flaws</span>
             <span className="font-bold text-amber-700">+25 XP each</span>
           </div>

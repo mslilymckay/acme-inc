@@ -19,59 +19,59 @@ export const InspectTab: React.FC<InspectTabProps> = ({ data }) => {
           <div className="bg-amber-300 border-b-2 border-black px-3 py-1.5 flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <Terminal className="w-3.5 h-3.5 text-slate-900" />
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-900">
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-900">
                 The Crime Scene Prompt
               </span>
             </div>
-            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-black text-amber-300 rounded font-mono">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-black text-amber-300 rounded font-mono">
               EVIDENCE #2.1
             </span>
           </div>
 
           <div className="p-3 bg-slate-900 text-emerald-400 font-mono text-xs leading-relaxed">
-            <div className="text-slate-500 text-[10px] select-none mb-1">
+            <div className="text-slate-400 text-[11px] select-none mb-1">
               // Prompt sent by Sam to Cortex:
             </div>
-            <div className="font-bold text-white bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <div className="font-bold text-white bg-slate-800 p-2.5 rounded-lg border border-slate-700 text-[13px]">
               "{data.crime_scene_prompt}"
             </div>
           </div>
         </div>
 
-        {/* Glowing Warning Panel (The 4 Prompt Cards Intro) */}
+        {/* Glowing Warning Panel (The 4 Prompt Pillars Intro) */}
         <div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-3 shadow-comic-sm relative overflow-hidden">
           <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm">
+            <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-black flex items-center justify-center shrink-0 shadow-comic-sm mt-0.5">
               <AlertTriangle className="w-4 h-4 text-slate-900" />
             </div>
 
             <div>
-              <h4 className="font-black text-xs text-slate-900 tracking-tight">
+              <h4 className="font-black text-sm text-slate-900 tracking-tight">
                 {data.warning_panel.title}
               </h4>
-              <p className="text-[11px] text-slate-700 mt-0.5 leading-snug">
+              <p className="text-xs text-slate-800 mt-1 leading-snug font-medium">
                 {data.warning_panel.body}
               </p>
             </div>
           </div>
 
-          {/* 4 Index Card Badges Preview */}
-          <div className="mt-2.5 pt-2 border-t border-amber-300/60 grid grid-cols-2 gap-1.5">
-            <div className="bg-white border-2 border-rose-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-rose-700 block uppercase">1. Role Card</span>
-              <span className="text-[9px] text-slate-500">Who are you?</span>
+          {/* 4 Prompt Planner Quadrants Preview */}
+          <div className="mt-3 pt-2.5 border-t border-amber-300/60 grid grid-cols-2 gap-2">
+            <div className="bg-white border-2 border-rose-300 rounded-xl p-2 text-center shadow-xs">
+              <span className="text-[11px] font-black text-rose-800 block uppercase">1. Persona</span>
+              <span className="text-[10px] font-semibold text-slate-600 block mt-0.5">Who should the AI behave as?</span>
             </div>
-            <div className="bg-white border-2 border-cyan-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-cyan-700 block uppercase">2. Audience Card</span>
-              <span className="text-[9px] text-slate-500">Who is reading?</span>
+            <div className="bg-white border-2 border-cyan-300 rounded-xl p-2 text-center shadow-xs">
+              <span className="text-[11px] font-black text-cyan-800 block uppercase">2. Audience</span>
+              <span className="text-[10px] font-semibold text-slate-600 block mt-0.5">Who is reading?</span>
             </div>
-            <div className="bg-white border-2 border-amber-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-amber-700 block uppercase">3. Context Card</span>
-              <span className="text-[9px] text-slate-500">What is the goal?</span>
+            <div className="bg-white border-2 border-amber-300 rounded-xl p-2 text-center shadow-xs">
+              <span className="text-[11px] font-black text-amber-800 block uppercase">3. Context</span>
+              <span className="text-[10px] font-semibold text-slate-600 block mt-0.5">What is the goal?</span>
             </div>
-            <div className="bg-white border-2 border-lime-300 rounded-lg p-1.5 text-center shadow-xs">
-              <span className="text-[9px] font-extrabold text-lime-700 block uppercase">4. Format Card</span>
-              <span className="text-[9px] text-slate-500">How should it look?</span>
+            <div className="bg-white border-2 border-lime-300 rounded-xl p-2 text-center shadow-xs">
+              <span className="text-[11px] font-black text-lime-800 block uppercase">4. Format</span>
+              <span className="text-[10px] font-semibold text-slate-600 block mt-0.5">How should it look?</span>
             </div>
           </div>
         </div>

@@ -224,15 +224,15 @@ export const INITIAL_CASES: Record<string, CaseData> = {
         crime_scene_prompt: "Write an email about the new manager training.",
         warning_panel: {
           title: "Warning: Insufficient Context",
-          body: "The AI is guessing your intent. A sufficient brief requires four distinct cards in your 4-Corner Prompt Planner: Role (Who are you?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
+          body: "The AI is guessing your intent. A sufficient brief requires four distinct cards in your 4-Corner Prompt Planner: Persona (Who should the AI behave as?), Audience (Who is reading?), Context (What is the goal?), and Format (How should it look?)."
         }
       },
       workbench_tab: {
         bento_slots: [
-          { id: "slot_role", label: "Role", description: "Who is speaking?", colorClass: "border-rose-400 bg-rose-50 text-rose-900" },
+          { id: "slot_role", label: "Persona", description: "Who should the AI behave as?", colorClass: "border-rose-400 bg-rose-50 text-rose-900" },
           { id: "slot_audience", label: "Audience", description: "Who is reading?", colorClass: "border-cyan-400 bg-cyan-50 text-cyan-900" },
           { id: "slot_context", label: "Context", description: "What is the goal?", colorClass: "border-amber-400 bg-amber-50 text-amber-900" },
-          { id: "slot_format", label: "Format", description: "How is it structured?", colorClass: "border-lime-400 bg-lime-50 text-lime-900" }
+          { id: "slot_format", label: "Format", description: "How should it look?", colorClass: "border-lime-400 bg-lime-50 text-lime-900" }
         ],
         available_chips: [
           { id: "chip_ld", text: "L&D Lead", type: "correct", category: "role" },
@@ -263,7 +263,7 @@ export const INITIAL_CASES: Record<string, CaseData> = {
       visual_type: "prompt_planner",
       summary: "AI can't read your mind. Every rock-solid prompt pins four essential cards to the 4-Corner Prompt Planner:",
       content_bullets: [
-        "Role: Ground the AI in a specific persona and authority level.",
+        "Persona: Tell the AI who it should behave as (role and authority level).",
         "Audience: Define exactly who will read or act on the response.",
         "Context: Provide the core facts, constraints, and deadline.",
         "Format: Specify length, tone, structural boundaries, etc."
