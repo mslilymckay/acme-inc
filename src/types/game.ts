@@ -46,18 +46,29 @@ export interface NounChip {
   category?: string;
 }
 
+export interface PruningRule {
+  id: string;
+  text: string;
+  category: string;
+  isContradiction: boolean;
+  conflictPairId?: string;
+  sourceLabel?: string;
+}
+
 export interface SuccessResolution {
   heading: string;
   message: string;
-  character_reaction_emoji: string;
+  character_reaction_emoji?: string;
   character_reaction_quote: string;
   resolved_prompt_template: string;
 }
 
 export interface WorkbenchTabData {
-  bento_slots: BentoSlot[];
-  available_chips: NounChip[];
-  solution_mapping: Record<string, string>; // slot_id -> chip_id
+  archetype?: '4_corner_planner' | 'red_pen_pruner' | 'card_swapper' | 'highlighter_stamp' | 'timeline_slider' | 'xray_lens' | 'flowchart_nodes';
+  bento_slots?: BentoSlot[];
+  available_chips?: NounChip[];
+  solution_mapping?: Record<string, string>; // slot_id -> chip_id
+  pruning_rules?: PruningRule[];
   success_resolution: SuccessResolution;
 }
 

@@ -26,7 +26,7 @@ interface GameState {
   assignChip: (slotId: string, chipId: string) => void;
   removeChip: (slotId: string) => void;
   clearAllSlots: () => void;
-  checkSolution: () => boolean;
+  checkSolution: (isExplicitSuccess?: boolean) => boolean;
   openFieldGuide: (caseId?: string) => void;
   closeFieldGuide: () => void;
   replayCase: (caseId: string) => void;
@@ -145,15 +145,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
 
-  checkSolution: () => {
+  checkSolution: (isExplicitSuccess?: boolean) => {
     const { currentCaseId, cases, slotAssignments, userXp, unlockedBadges } = get();
     const currentCase = cases[currentCaseId];
     if (!currentCase) return false;
 
-    const solutionMapping = currentCase.module_data.workbench_tab.solution_mapping;
-    const isCorrect = Object.entries(solutionMapping).every(
-      ([slotId, expectedChipId]) => slotAssignments[slotId] === expectedChipId
-    );
+    let isCorrect = false;
+    if (typeof isExplicitSuccess === 'boolean') {
+      isCorrect = isExplicitSuccess;
+    } else if (currentCase.module_data.workbench_tab.solution_mapping) {
+      const solutionMapping = currentCase.module_data.workbench_tab.solution_mapping;
+      isCorrect = Object.entries(solutionMapping).length > 0 && Object.entries(solutionMapping).every(
+        ([slotId, expectedChipId]) => slotAssignments[slotId] === expectedChipId
+      );
+    }
 
     if (isCorrect) {
       const updatedCases = { ...cases };
@@ -164,12 +169,17 @@ export const useGameStore = create<GameState>((set, get) => ({
         status: 'completed'
       };
 
-      // Unlock next case (2.2)
-      if (currentCaseId === '2.1' && updatedCases['2.2']) {
-        updatedCases['2.2'] = {
-          ...updatedCases['2.2'],
-          status: 'active'
-        };
+      // Automatically unlock the next sequential case
+      const caseKeys = Object.keys(updatedCases);
+      const currentIndex = caseKeys.indexOf(currentCaseId);
+      if (currentIndex >= 0 && currentIndex < caseKeys.length - 1) {
+        const nextCaseKey = caseKeys[currentIndex + 1];
+        if (updatedCases[nextCaseKey] && updatedCases[nextCaseKey].status === 'locked') {
+          updatedCases[nextCaseKey] = {
+            ...updatedCases[nextCaseKey],
+            status: 'active'
+          };
+        }
       }
 
       // Unlock level coach badge ONLY when ALL cases in this level are completed

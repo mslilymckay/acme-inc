@@ -4,6 +4,7 @@ import { CheckCircle2, RotateCcw, BookOpen, Sparkles, AlertCircle, X, FileText }
 import { WorkbenchTabData } from '../../types/game';
 import { useGameStore } from '../../store/useGameStore';
 import { CharacterAvatar } from '../common/CharacterAvatar';
+import { RedPenPruner } from './workbench/RedPenPruner';
 
 interface WorkbenchTabProps {
   data: WorkbenchTabData;
@@ -21,6 +22,11 @@ interface DragState {
 }
 
 export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
+  // Delegate to specific archetype workbenches
+  if (data.archetype === 'red_pen_pruner' || caseId === '2.2') {
+    return <RedPenPruner data={data} caseId={caseId} />;
+  }
+
   const {
     slotAssignments,
     assignChip,
@@ -39,19 +45,22 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const availableChips = data.available_chips || [];
+  const bentoSlots = data.bento_slots || [];
+
   // Scramble available prompt cards so they are never in slot order
   const scrambledChips = useMemo(() => {
-    const chips = [...data.available_chips];
+    const chips = [...availableChips];
     const order = ["chip_length", "chip_bullets", "chip_exec", "chip_ld", "chip_jargon", "chip_reg", "chip_managers"];
     return chips.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-  }, [data.available_chips]);
+  }, [availableChips]);
 
   const assignedChipIds = Object.values(slotAssignments).filter(Boolean) as string[];
   const unassignedChips = scrambledChips.filter(chip => !assignedChipIds.includes(chip.id));
 
   const getChipById = (id: string | null) => {
     if (!id) return null;
-    return data.available_chips.find(c => c.id === id);
+    return availableChips.find(c => c.id === id);
   };
 
   // Global pointer move / up listeners during active drag
@@ -236,7 +245,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
   };
 
   const getCardColorClasses = (chipId: string) => {
-    const chip = data.available_chips.find(c => c.id === chipId);
+    const chip = availableChips.find(c => c.id === chipId);
     if (!chip) return 'bg-stone-50 border-stone-300 text-stone-800';
     switch (chip.category) {
       case 'role':
@@ -311,7 +320,7 @@ export const WorkbenchTab: React.FC<WorkbenchTabProps> = ({ data, caseId }) => {
           {/* Planner Surface: 4 Drop-Zone Quadrants */}
           <div className="p-2.5">
             <div className="grid grid-cols-2 gap-2">
-              {data.bento_slots.map((slot) => {
+              {bentoSlots.map((slot) => {
                 const assignedChip = getChipById(slotAssignments[slot.id]);
                 const theme = quadrantThemes[slot.id] || {
                   emptyBg: 'bg-white',

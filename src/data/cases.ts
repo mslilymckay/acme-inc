@@ -280,46 +280,107 @@ export const INITIAL_CASES: Record<string, CaseData> = {
     badge_icon: "🧪",
     status: "locked",
     home_card: {
-      hook: "Liam pasted contradictory internet templates together. Chaos ensued.",
-      icon: "⚡"
+      hook: "Liam pasted contradictory internet templates together. Help him prune the noise.",
+      icon: "✂️"
     },
     module_data: {
       observe_tab: {
         colleague_name: "Liam",
         colleague_role: "Product Manager",
         colleague_avatar: "👨🏼‍💻",
-        message: "My launch update flips between silly jokes, rigid bullets, and a 5-page dissertation!",
-        flawed_output: { text: "Hey folks! LOL. Pursuant to section 1.1...", hotspots: [] }
+        message: "I grabbed three different prompt templates from the web and merged them for our Q4 product release. Now Cortex is writing this weird mess that starts with internet slang, drops into stiff legal jargon, and rambles for six pages!",
+        flawed_output: {
+          text: "[WHAT'S UP FAM! 🚀🔥] Pursuant to statutory clause 4.2 of the enterprise software architecture framework, the following [18-page comprehensive technical audit] shall hereby delineate every database schema mutation. LOL so true bestie! Furthermore, in accordance with regulatory bylaws, synergies will manifest.",
+          hotspots: [
+            {
+              id: "hs_2_1",
+              text: "[WHAT'S UP FAM! 🚀🔥]",
+              clue_note: "Conflicting Tone: Copied from a hype-marketing template, clashing directly with a professional product launch.",
+              xp_value: 25
+            },
+            {
+              id: "hs_2_2",
+              text: "[18-page comprehensive technical audit]",
+              clue_note: "Conflicting Scope: The prompt demands both a 'quick 3-bullet Slack TL;DR' AND an exhaustive audit.",
+              xp_value: 25
+            }
+          ]
+        }
       },
       inspect_tab: {
-        crime_scene_prompt: "Write a punchy 3-sentence update AND include a 5-page comprehensive analysis with jokes.",
+        crime_scene_prompt: "Act as a hip Gen-Z intern AND a corporate counsel. Write a punchy 3-bullet Slack update, but make sure to include an exhaustive 18-page technical dissertation covering every edge case.",
         warning_panel: {
           title: "Warning: Contradictory Constraints",
-          body: "When you give conflicting rules, the model fractures its style."
+          body: "When you give conflicting rules (e.g. 'be punchy and brief' vs. 'include an 18-page technical audit'), Cortex fractures its style. Prune conflicting rules with the Red Pen so only the true signal remains."
         }
       },
       workbench_tab: {
-        bento_slots: [],
-        available_chips: [],
-        solution_mapping: {},
+        archetype: "red_pen_pruner",
+        pruning_rules: [
+          {
+            id: "rule_len_slack",
+            text: "Format: 3 punchy bullet points for team Slack",
+            category: "Length",
+            isContradiction: false,
+            conflictPairId: "len"
+          },
+          {
+            id: "rule_len_audit",
+            text: "Format: 18-page comprehensive technical dissertation",
+            category: "Length",
+            isContradiction: true,
+            conflictPairId: "len",
+            sourceLabel: "From IT Audit Template"
+          },
+          {
+            id: "rule_tone_pro",
+            text: "Tone: Clear, professional product language",
+            category: "Tone",
+            isContradiction: false,
+            conflictPairId: "tone"
+          },
+          {
+            id: "rule_tone_meme",
+            text: "Tone: Overly casual hype intern with Gen-Z slang & emojis",
+            category: "Tone",
+            isContradiction: true,
+            conflictPairId: "tone",
+            sourceLabel: "From Viral Marketing Template"
+          },
+          {
+            id: "rule_scope_feat",
+            text: "Content: Highlight top 2 user features & release date",
+            category: "Content",
+            isContradiction: false,
+            conflictPairId: "scope"
+          },
+          {
+            id: "rule_scope_legal",
+            text: "Content: Mandatory statutory compliance & legal liability waivers",
+            category: "Content",
+            isContradiction: true,
+            conflictPairId: "scope",
+            sourceLabel: "From Legal Terms Template"
+          }
+        ],
         success_resolution: {
-          heading: "Clean Constraints!",
-          message: "Liam pruned the contradictory rules.",
-          character_reaction_emoji: "🎯",
-          character_reaction_quote: "Signal restored. Noise eliminated.",
-          resolved_prompt_template: "Write a punchy 3-sentence launch summary for Slack."
+          heading: "Case Solved: Signal Restored!",
+          message: "Liam pruned the contradictory rules from his prompt.",
+          character_reaction_quote: "Whew! When you crossed out the 18-page legal requirement and the meme speak, Cortex delivered a clean 3-bullet Slack update in four seconds. No more Frankenstein templates for me.",
+          resolved_prompt_template: "Act as a Product Manager using professional, accessible language. Write a punchy 3-bullet Slack update highlighting the top 2 user features and release date."
         }
       }
     },
     field_guide_data: {
       title: "Signal Over Noise",
-      visual_type: "constraint_pruner",
+      visual_type: "red_pen_pruner",
       summary: "Eliminate conflicting instructions so the AI can focus on your true goal.",
       content_bullets: [
-        "Never say 'be concise' AND 'be exhaustive' in the same brief.",
-        "Prune outdated rules from copy-pasted templates."
+        "Never ask for opposing lengths (e.g. 'concise summary' vs. 'exhaustive dissertation').",
+        "Stick to one clear persona instead of blending incompatible tones.",
+        "Prune copy-pasted templates down to only what your current task actually requires."
       ],
-      takeaway: "Simplicity beats a 20-clause Franken-prompt every time."
+      takeaway: "A 50-word prompt with zero contradictions will beat a 500-word Franken-prompt every single time."
     }
   },
   "2.3": {

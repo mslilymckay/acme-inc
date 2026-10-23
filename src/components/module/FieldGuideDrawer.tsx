@@ -56,31 +56,65 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
 
             {/* Compact Body Content (Fits 100% without scroll) */}
             <div className="space-y-2.5 my-2 flex-1 flex flex-col justify-around">
-              {/* Visual 4-Corner Prompt Planner Diagram */}
-              <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
-                <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
-                  📝 The 4-Corner Prompt Planner
-                </span>
+              {/* Visual Diagram: Dynamic by visual_type */}
+              {data.visual_type === 'red_pen_pruner' ? (
+                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
+                    ✂️ The Red-Pen Pruning Protocol
+                  </span>
 
-                <div className="grid grid-cols-2 gap-1.5">
-                  <div className="bg-rose-100 border border-rose-400 rounded-lg p-2 text-center">
-                    <span className="text-[10px] font-black text-rose-900 block uppercase">1. Persona</span>
-                    <p className="text-[11px] font-semibold text-rose-800">Who should the AI behave as?</p>
-                  </div>
-                  <div className="bg-cyan-100 border border-cyan-400 rounded-lg p-2 text-center">
-                    <span className="text-[10px] font-black text-cyan-900 block uppercase">2. Audience</span>
-                    <p className="text-[11px] font-semibold text-cyan-800">Who is reading?</p>
-                  </div>
-                  <div className="bg-amber-100 border border-amber-400 rounded-lg p-2 text-center">
-                    <span className="text-[10px] font-black text-amber-900 block uppercase">3. Context</span>
-                    <p className="text-[11px] font-semibold text-amber-800">What is the goal?</p>
-                  </div>
-                  <div className="bg-lime-100 border border-lime-400 rounded-lg p-2 text-center">
-                    <span className="text-[10px] font-black text-lime-900 block uppercase">4. Format</span>
-                    <p className="text-[11px] font-semibold text-lime-800">How should it look?</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-2 text-center opacity-85">
+                      <span className="text-[10px] font-black text-rose-800 uppercase block">
+                        ✕ Contradictory Noise
+                      </span>
+                      <p className="text-[10px] font-semibold text-rose-700 line-through mt-0.5">
+                        "18-page audit" + "meme speak"
+                      </p>
+                      <span className="text-[9px] font-bold text-rose-600 block mt-1">
+                        Prune with Red Pen
+                      </span>
+                    </div>
+
+                    <div className="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-2 text-center">
+                      <span className="text-[10px] font-black text-emerald-800 uppercase block">
+                        ✓ Harmonious Signal
+                      </span>
+                      <p className="text-[10px] font-semibold text-emerald-700 mt-0.5">
+                        "3-bullet Slack update"
+                      </p>
+                      <span className="text-[9px] font-bold text-emerald-600 block mt-1">
+                        Crystal-Clear Output
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-amber-50 border-2 border-black rounded-2xl p-2.5 shadow-comic-sm">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-800 block mb-1.5 text-center">
+                    📝 The 4-Corner Prompt Planner
+                  </span>
+
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div className="bg-rose-100 border border-rose-400 rounded-lg p-2 text-center">
+                      <span className="text-[10px] font-black text-rose-900 block uppercase">1. Persona</span>
+                      <p className="text-[11px] font-semibold text-rose-800">Who should the AI behave as?</p>
+                    </div>
+                    <div className="bg-cyan-100 border border-cyan-400 rounded-lg p-2 text-center">
+                      <span className="text-[10px] font-black text-cyan-900 block uppercase">2. Audience</span>
+                      <p className="text-[11px] font-semibold text-cyan-800">Who is reading?</p>
+                    </div>
+                    <div className="bg-amber-100 border border-amber-400 rounded-lg p-2 text-center">
+                      <span className="text-[10px] font-black text-amber-900 block uppercase">3. Context</span>
+                      <p className="text-[11px] font-semibold text-amber-800">What is the goal?</p>
+                    </div>
+                    <div className="bg-lime-100 border border-lime-400 rounded-lg p-2 text-center">
+                      <span className="text-[10px] font-black text-lime-900 block uppercase">4. Format</span>
+                      <p className="text-[11px] font-semibold text-lime-800">How should it look?</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Key Principles Bullets */}
               <div className="bg-slate-50 border-2 border-black rounded-2xl p-2.5 space-y-1.5 shadow-comic-sm">

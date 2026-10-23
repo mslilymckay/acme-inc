@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SamIllustration, SamMood } from './SamIllustration';
+import { LiamIllustration } from './LiamIllustration';
 
 interface CharacterAvatarProps {
   name: string;
@@ -27,12 +28,20 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
 
   const isLongQuote = Boolean(quote && quote.length > 135);
 
+  const renderIllustration = () => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('liam')) {
+      return <LiamIllustration mood={mood} size={sizePixels} />;
+    }
+    return <SamIllustration mood={mood} size={sizePixels} />;
+  };
+
   return (
     <div className="flex items-stretch gap-3">
       {/* Left Column: Vertically stacked portrait, name, and title */}
       <div className="flex flex-col items-center justify-center text-center shrink-0 w-[78px]">
         <div className="rounded-2xl bg-amber-100/70 border-2 border-black p-0.5 shadow-comic-sm overflow-hidden flex items-center justify-center">
-          <SamIllustration mood={mood} size={sizePixels} />
+          {renderIllustration()}
         </div>
         <h3 className="font-black text-slate-900 text-xs tracking-tight leading-tight mt-1.5 truncate w-full">
           {name}
