@@ -12,23 +12,26 @@ export const WelcomeModal: React.FC = () => {
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {showWelcomeModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3.5 bg-black/60 select-none"
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 select-none">
           {/* Backdrop click to dismiss */}
-          <div className="absolute inset-0" onClick={closeWelcomeModal} />
+          <motion.div
+            key="welcome-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute inset-0 bg-black/60"
+            onClick={closeWelcomeModal}
+          />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            key="welcome-modal-content"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 16 }}
-            transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             className="w-full max-w-[420px] bg-white border-3 border-black rounded-3xl p-4 shadow-comic relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Close button in top-right */}
@@ -140,7 +143,7 @@ export const WelcomeModal: React.FC = () => {
               </button>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

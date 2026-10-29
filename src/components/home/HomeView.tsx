@@ -3,7 +3,6 @@ import { Sparkles, ArrowRight, BookOpen, Info, MessageSquareHeart } from 'lucide
 import { useGameStore } from '../../store/useGameStore';
 import { TrophyCarousel } from './TrophyCarousel';
 import { CaseCard } from './CaseCard';
-import { FieldGuideDrawer } from '../module/FieldGuideDrawer';
 
 export const HomeView: React.FC = () => {
   const {
@@ -256,13 +255,7 @@ export const HomeView: React.FC = () => {
         </div>
       )}
 
-      {/* Field Guide Drawer when triggered from Closed case cards */}
-      {selectedCaseData && (
-        <FieldGuideDrawer
-          data={selectedCaseData.field_guide_data}
-          caseId={selectedCaseData.id}
-        />
-      )}
+      {/* Field Guide Drawer is rendered at App root level */}
     </div>
   );
 };

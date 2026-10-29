@@ -6,7 +6,6 @@ import { ObserveTab } from './ObserveTab';
 import { InspectTab } from './InspectTab';
 import { WorkbenchTab } from './WorkbenchTab';
 import { HotspotClueModal } from '../common/HotspotClueModal';
-import { FieldGuideDrawer } from './FieldGuideDrawer';
 
 export const ModuleView: React.FC = () => {
   const {
@@ -82,14 +81,9 @@ export const ModuleView: React.FC = () => {
           </h2>
         </div>
 
-        {/* XP button/pill with Slot-Machine roll transition and flash (No top overflow) */}
-        <motion.div
-          animate={isXpFlashing ? {
-            scale: [1, 1.15, 0.95, 1.05, 1],
-            backgroundColor: ['#ffffff', '#fef08a', '#86efac', '#ffffff']
-          } : { scale: 1, backgroundColor: '#ffffff' }}
-          transition={{ duration: 0.6 }}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-black shadow-comic-sm transition-colors ${
+        {/* XP button/pill with smooth Slot-Machine roll transition */}
+        <div
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-black shadow-comic-sm bg-white transition-shadow ${
             isXpFlashing ? 'ring-2 ring-amber-400' : ''
           }`}
         >
@@ -100,10 +94,10 @@ export const ModuleView: React.FC = () => {
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.span
                 key={userXp}
-                initial={{ y: 16, opacity: 0 }}
+                initial={{ y: 14, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -16, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                exit={{ y: -14, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="block leading-none"
               >
                 {userXp}
@@ -111,13 +105,13 @@ export const ModuleView: React.FC = () => {
             </AnimatePresence>
           </div>
 
-          {/* Flash bonus indicator inside the pill */}
+          {/* Bonus indicator inside the pill */}
           {isXpFlashing && xpToast && (
-            <span className="text-[10px] font-black text-emerald-700 font-mono animate-pulse">
+            <span className="text-[10px] font-black text-emerald-700 font-mono">
               {xpToast}
             </span>
           )}
-        </motion.div>
+        </div>
       </header>
 
       {/* Sub-Tab Navigation Bar */}
@@ -152,8 +146,8 @@ export const ModuleView: React.FC = () => {
         )}
       </nav>
 
-      {/* Main Tab Content View */}
-      <main className="flex-1 px-3 py-2 overflow-y-auto overflow-x-hidden">
+      {/* Main Tab Content View - Instant and seamless */}
+      <main className="flex-1 px-3 py-2 overflow-y-auto overflow-x-hidden relative">
         {currentTab === 'observe' && (
           <ObserveTab
             data={caseData.module_data.observe_tab}
@@ -178,12 +172,6 @@ export const ModuleView: React.FC = () => {
       <HotspotClueModal
         hotspot={activeHotspotClue}
         onClose={closeHotspotModal}
-      />
-
-      {/* Coach Notes Bottom Drawer */}
-      <FieldGuideDrawer
-        data={caseData.field_guide_data}
-        caseId={caseData.id}
       />
     </div>
   );

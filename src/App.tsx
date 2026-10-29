@@ -6,9 +6,11 @@ import { WelcomeModal } from './components/modals/WelcomeModal';
 import { PrototypeWipModal } from './components/modals/PrototypeWipModal';
 import { Level2CelebrationModal } from './components/modals/Level2CelebrationModal';
 import { FeedbackModal } from './components/modals/FeedbackModal';
+import { FieldGuideDrawer } from './components/module/FieldGuideDrawer';
 
 export function App() {
-  const { activeView } = useGameStore();
+  const { activeView, currentCaseId, cases } = useGameStore();
+  const currentCase = cases[currentCaseId];
 
   return (
     <div className="w-full h-full flex flex-col relative font-sans overflow-hidden bg-acme-cream">
@@ -20,6 +22,12 @@ export function App() {
       <PrototypeWipModal />
       <Level2CelebrationModal />
       <FeedbackModal />
+      {currentCase && (
+        <FieldGuideDrawer
+          data={currentCase.field_guide_data}
+          caseId={currentCase.id}
+        />
+      )}
     </div>
   );
 }

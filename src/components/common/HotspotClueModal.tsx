@@ -12,21 +12,24 @@ export const HotspotClueModal: React.FC<HotspotClueModalProps> = ({ hotspot, onC
   return (
     <AnimatePresence>
       {hotspot && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 select-none"
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
           {/* Backdrop click to dismiss */}
-          <div className="absolute inset-0" onClick={onClose} />
+          <motion.div
+            key="hotspot-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute inset-0 bg-black/60"
+            onClick={onClose}
+          />
 
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            key="hotspot-modal-content"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             className="w-full max-w-sm bg-white border-3 border-black rounded-3xl p-5 shadow-comic relative z-10 overflow-hidden"
           >
             {/* Top Banner */}
@@ -83,7 +86,7 @@ export const HotspotClueModal: React.FC<HotspotClueModalProps> = ({ hotspot, onC
               Add Clue to Case File ➔
             </button>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

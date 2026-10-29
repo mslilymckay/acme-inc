@@ -15,22 +15,25 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
   return (
     <AnimatePresence>
       {showFieldGuideModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 select-none"
-        >
+        <div className="fixed inset-0 z-50 flex items-end justify-center select-none">
           {/* Backdrop click to dismiss */}
-          <div className="absolute inset-0" onClick={closeFieldGuide} />
+          <motion.div
+            key="field-guide-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="absolute inset-0 bg-black/60"
+            onClick={closeFieldGuide}
+          />
 
           {/* Full Height Drawer (92vh) */}
           <motion.div
+            key="field-guide-drawer"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 260 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="w-full max-w-[430px] h-[92vh] max-h-[92vh] bg-white border-t-3 border-x-3 border-black rounded-t-[32px] p-4 shadow-comic relative z-10 flex flex-col justify-between overflow-hidden"
           >
             {/* Drag Handle */}
@@ -190,7 +193,7 @@ export const FieldGuideDrawer: React.FC<FieldGuideDrawerProps> = ({ data, caseId
               </button>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

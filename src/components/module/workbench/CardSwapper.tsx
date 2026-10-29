@@ -230,12 +230,24 @@ export const CardSwapper: React.FC<CardSwapperProps> = ({ data, caseId }) => {
       {/* FULL SUCCESS OVERLAY MODAL */}
       <AnimatePresence>
         {isSolved && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 select-none">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+            {/* Backdrop */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              key="cardswapper-success-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="absolute inset-0 bg-black/70"
+            />
+
+            <motion.div
+              key="cardswapper-success-content"
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="w-full max-w-sm bg-emerald-50 border-3 border-black rounded-3xl p-4 shadow-comic space-y-3"
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="w-full max-w-sm bg-emerald-50 border-3 border-black rounded-3xl p-4 shadow-comic space-y-3 relative z-10"
             >
               {/* Header without emoji in corner */}
               <div className="flex items-center gap-2.5 pb-2 border-b border-black/10">
@@ -296,7 +308,7 @@ export const CardSwapper: React.FC<CardSwapperProps> = ({ data, caseId }) => {
                 </button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
